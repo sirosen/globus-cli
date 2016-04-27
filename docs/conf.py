@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# globus-sdk-python documentation build configuration file, created by
+# globus-cli documentation build configuration file, created by
 # sphinx-quickstart on Fri Apr  1 14:35:36 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -51,6 +51,7 @@ source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
+man_master_doc = 'man_index'
 
 # General information about the project.
 project = 'globus-cli'
@@ -207,7 +208,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'globus-sdk-pythondoc'
+htmlhelp_basename = 'globus-cli'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -229,7 +230,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'globus-sdk-python.tex', 'globus-sdk-python Documentation',
+    (master_doc, 'globus-cli.tex', 'globus-cli Documentation',
      'Author', 'manual'),
 ]
 
@@ -258,9 +259,20 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
+_man_pages = [(man_master_doc, 'globus'),
+              ('man/auth', 'globus auth'),
+              ('man/transfer', 'globus transfer')]
+for cmd in ('get-identities',):
+    _man_pages.append(('man/auth/{}'.format(cmd),
+                       'globus auth {}'.format(cmd)))
+for cmd in ('acl', 'async-delete', 'async-transfer', 'bookmark', 'ls', 'mkdir',
+            'rename', 'task'):
+    _man_pages.append(('man/transfer/{}'.format(cmd),
+                       'globus transfer {}'.format(cmd)))
+
 man_pages = [
-    (master_doc, 'globus-sdk-python', 'globus-sdk-python Documentation',
-     [author], 1)
+    (pg, pagename, '', [author], 1)
+    for (pg, pagename) in _man_pages
 ]
 
 # If true, show URL addresses after external links.
@@ -273,8 +285,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'globus-sdk-python', 'globus-sdk-python Documentation',
-     author, 'globus-sdk-python', 'One line description of project.',
+    (master_doc, 'globus-cli', 'globus-cli Documentation',
+     author, 'globus-cli', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -359,3 +371,27 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 #epub_use_index = True
+
+
+from sphinx.ext import autodoc
+
+class NoHeaderDocumenter(autodoc.FunctionDocumenter):
+    objtype = "noheader"
+    content_indent = ""
+
+    def add_directive_header(self, sig):
+        return
+
+class CLIDocumenter(autodoc.FunctionDocumenter):
+    objtype = "cli"
+    content_indent = "\n: "
+
+    def get_doc(self, encoding=None, ignore=1):
+        return [[self.object.cli_help]]
+
+    def add_directive_header(self, sig):
+        return
+
+def setup(app):
+    app.add_autodocumenter(CLIDocumenter)
+    app.add_autodocumenter(NoHeaderDocumenter)
