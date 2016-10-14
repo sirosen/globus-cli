@@ -3,7 +3,7 @@ import click
 from globus_cli.safeio import safeprint
 from globus_cli.parsing import common_options
 
-from globus_cli.config_command.helpers import load_config
+from globus_cli.config_command.helpers import load_config, parse_path_param
 
 
 @click.command('set', help='Set a value in the Globus Config')
@@ -15,10 +15,7 @@ def set_command(value, parameter):
     Executor for `globus config set`
     """
     conf = load_config()
-
-    section = 'general'
-    if '.' in parameter:
-        section, parameter = parameter.split('.', 1)
+    section, parameter = parse_path_param(parameter)
 
     # ensure that the section exists
     if section not in conf:

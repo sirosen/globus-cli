@@ -4,7 +4,7 @@ import click
 
 from globus_cli.safeio import safeprint
 from globus_cli.parsing import CaseInsensitiveChoice, common_options
-from globus_cli.config import write_option, OUTPUT_FORMAT_OPTNAME
+from globus_cli.config import write_option, OUTPUT_FORMAT_OPT
 
 
 @click.command('init',
@@ -29,7 +29,7 @@ def init_command(default_output_format):
             'This must be one of "json" or "text". Other values will be '
             'ignored. ENTER to skip.'))
         default_output_format = click.prompt(
-            'Default CLI output format (cli.output_format)',
+            'Default CLI output format (output_format)',
             default='text',
             ).strip().lower()
         if default_output_format not in ('json', 'text'):
@@ -38,4 +38,5 @@ def init_command(default_output_format):
     # write to disk
     safeprint('\n\nWriting updated config to {0}'
               .format(os.path.expanduser('~/.globus.cfg')))
-    write_option(OUTPUT_FORMAT_OPTNAME, default_output_format)
+    section, optname = OUTPUT_FORMAT_OPT
+    write_option(optname, default_output_format, section=section)

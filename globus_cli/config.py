@@ -8,13 +8,12 @@ from globus_cli import version
 
 __all__ = [
     # option name constants
-    'OUTPUT_FORMAT_OPTNAME',
+    'OUTPUT_FORMAT_OPT',
     'AUTH_RT_OPTNAME',
     'TRANSFER_RT_OPTNAME',
 
     'internal_auth_client',
 
-    'get_output_format',
     'get_auth_refresh_token',
     'get_transfer_refresh_token',
 
@@ -32,7 +31,7 @@ CLIENT_ID = '95fdeba8-fac2-42bd-a357-e068d82ff78e'
 ENV_CLIENT_ID_OPTNAME = 'cli_client_id'
 
 # constants for global use
-OUTPUT_FORMAT_OPTNAME = 'output_format'
+OUTPUT_FORMAT_OPT = ('cli', 'output_format')
 AUTH_RT_OPTNAME = 'auth_refresh_token'
 TRANSFER_RT_OPTNAME = 'transfer_refresh_token'
 
@@ -79,10 +78,6 @@ def write_option(option, value, section='cli', system=False):
 
     conf[section][option] = value
     conf.write()
-
-
-def get_output_format():
-    return lookup_option(OUTPUT_FORMAT_OPTNAME)
 
 
 def get_auth_refresh_token():
