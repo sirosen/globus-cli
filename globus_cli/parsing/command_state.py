@@ -34,5 +34,5 @@ def format_option(f):
         cls=ConfigLoadedOption,
         config_key=config.OUTPUT_FORMAT_OPT,
         help='Output format for stdout',
-        default=TEXT_FORMAT,
+        default=TEXT_FORMAT, show_default=True,
         expose_value=False, callback=callback)(f)
