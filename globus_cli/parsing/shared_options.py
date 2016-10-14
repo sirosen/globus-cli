@@ -3,6 +3,7 @@ import click
 from globus_cli.version import __version__
 from globus_cli.parsing.command_state import format_option
 from globus_cli.parsing.case_insensitive_choice import CaseInsensitiveChoice
+from globus_cli.parsing.session_loaded_option import SessionLoadedOption
 
 
 def common_options(*args, **kwargs):
@@ -96,7 +97,9 @@ def endpoint_id_option(*args, **kwargs):
         want to dispatch depending on how this is invoked
         """
         help = kwargs.get('help', 'ID of the Endpoint')
-        f = click.option('--endpoint-id', required=True, help=help)(f)
+        f = click.option('--endpoint-id', required=True, help=help,
+                         cls=SessionLoadedOption,
+                         session_key='transfer.endpoint_id')(f)
         return f
 
     # special behavior when invoked with only one non-keyword argument: act as

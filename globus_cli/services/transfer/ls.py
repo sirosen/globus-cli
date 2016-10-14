@@ -82,8 +82,7 @@ def _get_ls_res(client, path, endpoint_id, recursive, depth):
               help=('Limit to number of directories to traverse in '
                     '`--recursive` listings. A value of 0 indicates that '
                     'this should behave like a non-recursive `ls`'))
-@click.option('--path', default='/~/', show_default=True,
-              help='Path on the remote endpoint to list.')
+@click.argument('path', default='/~/', nargs=1)
 def ls_command(path, recursive_depth_limit, recursive, long, endpoint_id):
     """
     Executor for `globus transfer ls`
