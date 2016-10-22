@@ -1,4 +1,5 @@
 import os
+import re
 import shlex
 import click
 
@@ -130,6 +131,9 @@ def get_all_choices(completed_args, cur, quoted):
     # and if it's a multicommand we see, get the list of subcommands
     elif isinstance(ctx.command, click.MultiCommand) and not quoted:
         choices = [name for name in ctx.command.list_commands(ctx)]
+    # if the command has a specialized "completer" func, run if even if quoted
+    elif hasattr(ctx.command, 'completer'):
+        choices = ctx.command.completer()
     else:
         pass
 
@@ -152,8 +156,16 @@ def do_bash_complete():
 
     choices = get_all_choices(completed_args, cur, quoted)
 
-    safeprint('\t'.join(choices), newline=False)
-    click.get_current_context().exit(0)
+    def bash_escape(str_choice):
+        if not quoted:
+            # substitute in a backslash before any spaces, slashes, quotes
+            # this "\1" is NOT the bash escape \1, but python's re pattern
+            # "\1", which represents insertion of the original matched pattern
+            # (in parens)
+            str_choice = re.sub(r"""([\s\\"'])""", r'\\\1', str_choice)
+        return str_choice
+
+    safeprint('\t'.join(bash_escape(c) for c in choices), newline=False)
 
 
 def do_zsh_complete():
@@ -170,7 +182,11 @@ def do_zsh_complete():
 
     choices = get_all_choices(completed_args, cur, quoted)
 
-    safeprint("_arguments '*: :(({}))'".format('\n'.join(choices)),
+    def zsh_escape(str_choice):
+        return '"{}"'.format(str_choice.replace('"', '""').replace("'", "''"))
+
+    safeprint("_arguments '*: :(({}))'"
+              .format('\n'.join(zsh_escape(c) for c in choices)),
               newline=False)
 
 

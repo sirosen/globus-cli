@@ -16,7 +16,6 @@ def bookmark_locate(bookmark_id_or_name):
     """
     Executor for `globus transfer bookmark locate`
     """
-
     client = get_client()
 
     # leading/trailing whitespace doesn't make sense for UUIDs and the Transfer
@@ -48,3 +47,35 @@ def bookmark_locate(bookmark_id_or_name):
             click.get_current_context().exit(1)
 
     print('{}:{}'.format(res['endpoint_id'], res['path']))
+
+
+def complete_func():
+    import os
+    import time
+    try:
+        completion_cache_dir = os.path.expanduser(
+            '~/.globus_completion_cache')
+        completion_cache = os.path.join(completion_cache_dir, 'bookmark_names')
+        try:
+            os.mkdir(completion_cache_dir)
+        except OSError:
+            pass
+
+        # if file DNE or is more than 30s old, it will be rewritten
+        if not os.path.exists(completion_cache) or (
+                os.stat(completion_cache).st_mtime <
+                time.time() - 30):
+            with open(completion_cache, 'w') as fd:
+                client = get_client()
+                res = [b['name'] for b in client.bookmark_list()]
+                fd.write('\n'.join(res))
+                return res
+        # elsewise, open and read the cache
+        else:
+            with open(completion_cache, 'r') as fd:
+                return [line.strip() for line in fd]
+    # blanket exception -- completion functions cannot throw errors!
+    except Exception:
+        return []
+
+bookmark_locate.completer = complete_func
