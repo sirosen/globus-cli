@@ -9,6 +9,7 @@ and all other components will be hidden internals.
 import sys
 import click
 
+from globus_cli.parsing.shell_completion import shell_complete_option
 from globus_cli.parsing.excepthook import custom_except_hook
 from globus_cli.parsing.shared_options import common_options
 
@@ -30,4 +31,5 @@ class TopLevelGroup(click.Group):
 def globus_main_func(f):
     f = click.group('globus', cls=TopLevelGroup)(f)
     f = common_options(f)
+    f = shell_complete_option(f)
     return f
