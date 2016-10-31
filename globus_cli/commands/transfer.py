@@ -5,7 +5,8 @@ from globus_sdk import TransferData
 
 from globus_cli.parsing import (
     CaseInsensitiveChoice, common_options, submission_id_option,
-    TaskPath, ENDPOINT_PLUS_OPTPATH, shlex_process_stdin)
+    TaskPath, ENDPOINT_PLUS_OPTPATH, shlex_process_stdin,
+    command_with_man)
 from globus_cli.safeio import safeprint
 from globus_cli.helpers import (
     outformat_is_json, print_json_response, colon_formatted_print)
@@ -13,71 +14,56 @@ from globus_cli.helpers import (
 from globus_cli.services.transfer import get_client, autoactivate
 
 
-@click.command('transfer', short_help='Submit a Transfer Task',
-               help=("""\
-    Copy a file or directory from one Endpoint to another as an asynchronous
-    task.
+@command_with_man('transfer', short_help='Submit a Transfer Task',
+                  help=("Copy a file or directory (or set of files and "
+                        "directories) from one Endpoint to "
+                        "another as an asynchronous task."),
+                  manpage_description=("""\
+    .B "Single-Item Mode vs. Batch Mode"
 
-    \b
-    Single-Item Mode vs. Batch Mode
-    ===
+    .RS
+    This command two modes of operation: single-item, and batchmode.
 
-    Has two modes of operation: single-item, and batchmode.
+    Single-item has behavior similar to
+    .I cp
+    and
+    .IR "cp -r",
+    across endpoints of course. It is the behavior you get if you use
+    .I SOURCE_PATH
+    and
+    .IR DEST_PATH .
 
-    ---
-
-    Single-item has behavior similar to `cp` and `cp -r`, across endpoints of
-    course.
-
-    It is the behavior you get if you use `SOURCE_PATH` and `DEST_PATH`.
-
-    ---
-
-    Batchmode is the way in which `transfer` can be used to
+    Batch Mode is the way in which `transfer` can be used to
     submit a Task which transfers multiple files or directories, and it is
     used to accept paths to transfer on stdin.
+    .RE
 
+    .B Batch Mode
+    .RS
     Batchmode splits each line on spaces, and treats every line as a file or
     directory item to transfer.
+
     Splitting is done using Python shlex in POSIX mode:
-    https://docs.python.org/2/library/shlex.html
+    .I https://docs.python.org/2/library/shlex.html
 
-    \b
     Lines are of the form
+    .RS
     [--recursive] SOURCE_PATH DEST_PATH
+    .RE
 
-    Skips empty lines and allows comments beginning with "#".
+    Skips empty lines and allows comments beginning with
+    .IR # .
 
-    \b
-    Example of --batch usage:
-        $ cat dat
-        # file 1, simple
-        ~/dir1/sourcepath1 /abspath/destpath1
-
-    \b
-        # file 2, with spaces in dest path
-        # paths without / or ~ are relative to the default_directory of the
-        # endpoint they are on
-        dir2/sourcepath2   "path with spaces/dest2"
-
-    \b
-        # dir 1, requires --recursive option
-        --recursive ~/srcdir1/ /somepath/destdir1
-
-    \b
-        $ cat dat | globus transfer \\
-            --batch --sync-level checksum \\
-            "$SOURCE_ENDPOINT_ID" "$DEST_ENDPOINT_ID"
-
-    \b
-    You can use `--batch` with a commandline SOURCE_PATH and/or DEST_PATH.
-    In that case, these paths will be used as dir prefixes to any paths in the
+    You can use
+    .I --batch
+    with a commandline
+    .IR SOURCE_PATH " and/or " DEST_PATH ,
+    in which case these paths will be used as dir prefixes to any paths in the
     batch input.
+    .RE
 
-    \b
-    Sync Levels
-    ===
-
+    .B Sync Levels
+    .RS
     Sync Levels are ways in which the Task determines whether or not to
     actually move a file over the network.
     Choosing a higher sync level will reduce your network traffic when files in
@@ -86,19 +72,42 @@ from globus_cli.services.transfer import get_client, autoactivate
     We recommend using high sync levels for tasks where you know or suspect
     that a non-negligible percentage of files already exist on the destination.
 
-    EXISTS: Determine whether or not to transfer based on file existence.
+    .IP EXISTS
+    Determine whether or not to transfer based on file existence.
     If the destination file is absent, do the transfer.
 
-    SIZE: Determine whether or not to transfer based on the size of the file.
+    .IP SIZE
+    Determine whether or not to transfer based on the size of the file.
     If destination file size does not match the source, do the transfer.
 
-    MTIME: Determine whether or not to transfer based on modification times.
+    .IP MTIME
+    Determine whether or not to transfer based on modification times.
     If source has a newer modififed time than the destination, do the transfer.
 
-    CHECKSUM: Determine whether or not to transfer based on checksums of file
-    contents.
+    .IP CHECKSUM
+    Determine whether or not to transfer based on checksums of file contents.
     If source and destination contents differ, as determined by a checksum of
     their contents, do the transfer.
+    .RE
+    """),
+                  manpage_example=("""\
+    Example of --batch usage:
+
+        $ cat dat
+        # file 1, simple
+        ~/dir1/sourcepath1 /abspath/destpath1
+
+        # file 2, with spaces in dest path
+        # paths without / or ~ are relative to the default_directory of the
+        # endpoint they are on
+        dir2/sourcepath2   "path with spaces/dest2"
+
+        # dir 1, requires --recursive option
+        --recursive ~/srcdir1/ /somepath/destdir1
+
+        $ cat dat | globus transfer \\\\
+            --batch --sync-level checksum \\\\
+            "$SOURCE_ENDPOINT_ID" "$DEST_ENDPOINT_ID"
     """))
 @common_options
 @submission_id_option
@@ -125,8 +134,7 @@ from globus_cli.services.transfer import get_client, autoactivate
               help=('Accept a batch of source/dest path pairs on stdin (i.e. '
                     'run in batchmode). '
                     'Uses SOURCE_ENDPOINT_ID and DEST_ENDPOINT_ID as passed '
-                    'on the commandline. Commandline paths are still allowed '
-                    'and are used as prefixes to the batchmode inputs.'))
+                    'on the commandline'))
 @click.argument('source', metavar='SOURCE_ENDPOINT_ID[:SOURCE_PATH]',
                 type=ENDPOINT_PLUS_OPTPATH)
 @click.argument('destination', metavar='DEST_ENDPOINT_ID[:DEST_PATH]',
