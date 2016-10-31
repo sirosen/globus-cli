@@ -3,6 +3,7 @@ import click
 import subprocess
 
 from globus_cli.version import __version__
+from globus_cli.parsing.hidden_option import HiddenOption
 
 
 class CommandWithMan(click.Command):
@@ -43,6 +44,24 @@ class CommandWithMan(click.Command):
         {1}
         """).format(self.help, textwrap.dedent(self.manpage_description or ''))
 
+        options = ((p.opts, p.help or '',
+                    p.make_metavar() if not p.is_flag else None)
+                   for p in self.params
+                   if isinstance(p, click.Option) and
+                   not isinstance(p, HiddenOption))
+        option_lines = [
+            '.IP ' + ' '.join(
+                '"{}"'.format(
+                    o + (' ' + metavar) if metavar else ''
+                ) for o in opts) +
+            '\n{}'.format(helpstr)
+            for (opts, helpstr, metavar) in options
+        ]
+        options_section = textwrap.dedent("""\
+        .SH OPTIONS
+        {0}
+        """).format('\n'.join(option_lines))
+
         # example is a custom section for manpages to give  usage examples
         example_section = (textwrap.dedent("""\
         .SH EXAMPLE
@@ -52,7 +71,8 @@ class CommandWithMan(click.Command):
 
         return '\n'.join(x for x in
                          (title_line, name_section, synopsis_section,
-                          description_section, example_section)
+                          options_section, description_section,
+                          example_section)
                          if x)
 
 
