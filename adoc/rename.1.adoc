@@ -2,7 +2,7 @@
 
 == NAME
 
-rename - Rename a file or directory on an endpoint
+globus rename - Rename a file or directory on an endpoint
 
 == SYNOPSIS
 
