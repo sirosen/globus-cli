@@ -12,7 +12,7 @@ globus list-commands - List all commands available in the globus cli
 
 The *list-commands* command prints the name and a short description of
 every command available in the globus cli. Commands are grouped by their
-parent commands, e.g. *activate* is listed under *globus endpoint* and is
+parent commands, e.g. 'activate' is listed under 'globus endpoint' and is
 invoked with 'globus endpoint activate'.
 
 Note that commands with the same name but different parent commands are
