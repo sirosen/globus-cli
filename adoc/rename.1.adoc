@@ -1,0 +1,38 @@
+= RENAME(1)
+
+== NAME
+
+rename - Rename a file or directory on an endpoint
+
+== SYNOPSIS
+
+*globus rename* ['OPTIONS'] 'ENDPOINT_ID:SOURCE_PATH' 'ENDPOINT_ID:DEST_PATH'
+
+== DESCRIPTION
+
+The *rename* command renames a file or directory on an endpoint.  
+
+The old path must be an existing file or directory.  The new path must not yet
+exist.  
+
+The new path does not have to be in the same directory as the old path, but
+most endpoints will require it to stay on the same filesystem (you can not
+rename across a filesystem boundary).
+
+The endpoint must be entered twice (in the old and new paths) for the
+sake of path syntax consistency.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== EXAMPLES
+
+Rename a directory:
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus rename $ep_id:~/tempdir $ep_id:~/project-foo
+----
+
+include::include/exit_status.adoc[]

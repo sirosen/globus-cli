@@ -1,0 +1,8 @@
+== EXIT STATUS
+
+0 on success.
+
+1 if a network or server error occurred, unless --map-http-status has been
+used to change exit behavior on http error codes.
+
+2 if the command was used improperly.

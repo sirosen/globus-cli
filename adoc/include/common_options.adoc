@@ -1,0 +1,20 @@
+*--map-http-status* 'TEXT'::
+
+Map non success HTTP response codes to exit codes other than 1.
+e.g. "--map-http-satus 403=0,404=0" would exit with 0 even if a 403
+or 404 http error code was received. Valid exit codes are 0,1,50-99.
+
+*-F, --format* '[json|text]'::
+
+Set the output format for stdout. Defaults to "text".
+
+*-h, --help*::
+
+Show help text for this command.
+
+*-v, --verbose*::
+
+Control the level of output. 
+Use -v or --verbose to show warnings and any additional text output. 
+Use -vv to add informative logging.
+Use -vvv or --debug to add debug logging and full stack on any errors.
