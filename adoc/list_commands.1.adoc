@@ -1,0 +1,20 @@
+= LIST-COMMANDS(1)
+
+== NAME
+
+globus list-commands - List all commands available in the globus cli
+
+== SYNOPSIS
+
+*globus list-commands*
+
+== DESCRIPTION
+
+The *list-commands* command prints the name and a short description of
+every command available in the globus cli. Commands are grouped by their
+parent commands, e.g. *activate* is listed under *globus endpoint* and is
+invoked with 'globus endpoint activate'.
+
+Note that commands with the same name but different parent commands are
+distinct. e.g. 'globus task update' is a distinct command from
+'globus endpoint update'.
