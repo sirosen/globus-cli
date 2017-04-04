@@ -1,0 +1,24 @@
+*--deadline*::
+
+Set a deadline in ISO time format for this to be canceled if not completed by.
+ISO format is 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' If hours minutes and
+seconds are not given they are assumed to be 00:00:00. This time must not
+be in the past or the task will not be submitted.
+
+*--dry-run*::
+
+Don't submit the task, but print submission data instead.
+
+*--label*::
+
+Set an optional label for the task. These are meant for human readability and
+ease of filtering the task list
+
+*--submission-id*::
+
+Specify a submission id to use with this task. Submission id's are generated
+using 'globus task generate-submission-id' and prevent re-submission of
+a task with the same submission id in case of unreliable networks.
+Note that this is *not* the same id as the task id once it is submitted.
+If not specified the Globus CLI will still generate a submission id and safely
+resubmit tasks on network errors.

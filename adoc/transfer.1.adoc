@@ -1,0 +1,147 @@
+= TRANSFER(1)
+
+== NAME
+
+globus transfer - Submit a transfer task
+
+== SYNOPSIS
+
+*globus transfer* ['OPTIONS'] -- SOURCE_ENDPOINT_ID:SOURCE_PATH DEST_ENDPOINT_ID:DEST_PATH
+
+*globus transfer* ['OPTIONS'] SOURCE_ENDPOINT_ID DEST_ENDPOINT_ID --batch *<* 'INPUT_LINE(s)'...
+
+== DESCRIPTION
+
+*transfer* creates an asynchronous task that copies files and/or directories
+between endpoints. 
+
+The *transfer* command has two modes. Single target, which transfers one file
+or one directory, and batched, which takes in several lines to transfer 
+multiple files or directories. See "Batch Input" below for more information.
+
+The *transfer* command will always place the dest files in a
+consistent, deterministic location.  The contents of a source directory will
+be placed inside the dest directory.  A source file will be copied to
+the dest file path, which must not be an existing  directory.  All
+intermediate / parent directories on the dest will be automatically
+created if they don't exist. 
+
+If the files or directories given as input are symbolic links, they are
+followed.  However, no other symbolic links are followed and no symbolic links
+are ever created on the dest.  
+
+Globbing ("*") is not supported.
+
+
+include::include/cli_autoactivate.adoc[]
+
+
+== Batch Input
+
+If you use `SOURCE_PATH` and `DEST_PATH` without the `--batch` flag, you
+will submit a single-file or single-directory transfer Task. This has
+behavior similar to `cp` and `cp -r`, across endpoints of course.
+
+Using `--batch`, *globus transfer* can submit a Task which transfers
+multiple files or directories. Paths to transfer are taken from stdin.
+Lines are split on spaces, respecting quotes, and every line is treated as
+a file or directory to transfer.
+
+Lines are of the form
+[--recursive] SOURCE_PATH DEST_PATH
+
+Empty lines and comments beginning with "#" are ignored.
+
+If you use `--batch` and a commandline SOURCE_PATH and/or DEST_PATH, these
+paths will be used as dir prefixes to any paths on stdin.
+
+
+== OPTIONS
+
+*--batch*::
+
+Starts batch mode input for transfers, which takes lines in the form 
+[--recursive] SOURCE_PATH DEST_PATH from stdin to transfer multiple
+files and/or directories. See "Batch Input" above for more information.
+
+*-r, --recursive*::
+
+If SOURCE_PATH and DEST_PATH are both directories, do a recursive transfer
+of all files and directories inside of the source directory to the destination
+directory. Note that for batch input, each directory must be marked as
+recursive individually unlike 'globus delete'.
+
+*-s, --sync-level [exists|size|mtime|checksum]*::
+
+Set the level at which the transfer task will decide to replace a file at the
+destination with a file at the source with the same name. If not set, 
+
+*exists* will only copy files that do not exist at the destination
+
+*size* will replace a file if the size of the destination file does not match
+the size of the source file
+
+*mtime* will replace a file if the timestamp of the destination file is older
+than the timestamp of the source file
+
+*checksum* will replace a file if the source and destination files have
+different checksums.
+
+*--preserve-mtime*::
+
+Preserve the modification time of files transfered. Note that directories
+will not have their modification times preserved.
+
+*--verify-checksum / --no-verify-checksum*::
+
+After transfer, verify that the source and destination file checksums match. 
+If they don’t, re-transfer the entire file and keep trying until it succeeds. 
+Defaults to True.
+
+*--encrypt*::
+
+Encrypt the transfer data channel. If either the source or the destination
+endpoints has force_encryption set this will be done automatically.
+
+*--delete*::
+
+Delete extraneous files (and directories) in the dest directory.  Only
+applies to recursive directory transfers.  For example, a recursive transfer of
+/some/source/dir/ to /tmp/mydir/ will ensure /tmp/mydir/ will have no files not
+in /some/source/dir/.  All other files in /tmp outside of /tmp/mydir/ are left
+alone.
+
+include::include/task_submission_options[]
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Transfer a single file.
+----
+$ source_ep=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ dest_ep=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus transfer $source_ep:/share/godata/file1.txt $dest_ep:~/mynewfile.txt
+----
+
+Transfer a directory recursively.
+
+----
+$ source_ep=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ dest_ep=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus transfer $source_ep:/share/godata/ $dest_ep:~/mynewdir/ --recursive
+----
+
+Use the batch input method to transfer multiple files and or dirs.
+
+----
+$ source_ep=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ dest_ep=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus transfer $source_ep $dest_ep --batch
+/share/godata/file1.txt ~/myfile1.txt
+/share/godata/file2.txt ~/myfile2.txt
+/share/godata/file3.txt ~/myfile3.txt
+/share/godata ~/mygodatadir -r
+<EOF>
+----
