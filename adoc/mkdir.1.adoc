@@ -10,7 +10,7 @@ globus mkdir - Create a directory on an endpoint
 
 == DESCRIPTION
 
-The *globus mkdir* command creates a directory.
+The *globus mkdir* command creates a directory on the given endpoint and path.
 
 include::include/cli_autoactivate.adoc[]
 
