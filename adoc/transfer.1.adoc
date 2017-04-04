@@ -16,7 +16,7 @@ globus transfer - Submit a transfer task
 between endpoints. 
 
 The *transfer* command has two modes. Single target, which transfers one file
-or one directory, and batched, which takes in several lines to transfer 
+or one directory, and batch, which takes in several lines to transfer 
 multiple files or directories. See "Batch Input" below for more information.
 
 The *transfer* command will always place the dest files in a
@@ -40,7 +40,7 @@ include::include/cli_autoactivate.adoc[]
 
 If you use `SOURCE_PATH` and `DEST_PATH` without the `--batch` flag, you
 will submit a single-file or single-directory transfer Task. This has
-behavior similar to `cp` and `cp -r`, across endpoints of course.
+behavior similar to `cp` and `cp -r`, across endpoints.
 
 Using `--batch`, *globus transfer* can submit a Task which transfers
 multiple files or directories. Paths to transfer are taken from stdin.
@@ -52,9 +52,9 @@ Lines are of the form
 
 Empty lines and comments beginning with "#" are ignored.
 
-If you use `--batch` and a commandline SOURCE_PATH and/or DEST_PATH, these
-paths will be used as dir prefixes to any paths on stdin.
-
+Batch only requires a SOURCE_ENDPOINT and a DEST_ENDPOINT before passing lines,
+on stdin, but if you pass SOURCE_PATH and/or DEST_PATH in the original command,
+these paths will be used as prefixes to their respective paths on stdin.
 
 == OPTIONS
 
@@ -75,15 +75,15 @@ recursive individually unlike 'globus delete'.
 
 Set the level at which the transfer task will decide to replace a file at the
 destination with a file at the source with the same name. If not set, 
-
++
 *exists* will only copy files that do not exist at the destination
-
++
 *size* will replace a file if the size of the destination file does not match
 the size of the source file
-
++
 *mtime* will replace a file if the timestamp of the destination file is older
 than the timestamp of the source file
-
++
 *checksum* will replace a file if the source and destination files have
 different checksums.
 
@@ -105,13 +105,13 @@ endpoints has force_encryption set this will be done automatically.
 
 *--delete*::
 
-Delete extraneous files (and directories) in the dest directory.  Only
+Delete extraneous files and directories in the dest directory.  Only
 applies to recursive directory transfers.  For example, a recursive transfer of
 /some/source/dir/ to /tmp/mydir/ will ensure /tmp/mydir/ will have no files not
 in /some/source/dir/.  All other files in /tmp outside of /tmp/mydir/ are left
 alone.
 
-include::include/task_submission_options[]
+include::include/task_submission_options.adoc[]
 
 include::include/common_options.adoc[]
 

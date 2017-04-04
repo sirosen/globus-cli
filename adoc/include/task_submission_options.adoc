@@ -19,6 +19,6 @@ ease of filtering the task list
 Specify a submission id to use with this task. Submission id's are generated
 using 'globus task generate-submission-id' and prevent re-submission of
 a task with the same submission id in case of unreliable networks.
-Note that this is *not* the same id as the task id once it is submitted.
+Note that this is not the same id as the task's id once it is submitted.
 If not specified the Globus CLI will still generate a submission id and safely
 resubmit tasks on network errors.
