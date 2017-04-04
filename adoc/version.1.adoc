@@ -1,0 +1,34 @@
+= GLOBUS VERSION(1)
+
+== NAME
+
+glbous version - Show the version and exit
+
+== SYNOPSIS
+
+*globus version*
+
+== DESCRIPTION
+
+Displays the current and latest versions of the Globus CLI. Equivalent to
+*globus --version*
+
+If the current version is not the latest version, instructions will be given
+for how to update the CLI.
+
+== OPTIONS
+
+*-h, --help*::
+
+Show help text for this command.
+
+*-v, --verbose*::
+
+Control the level of output. 
++
+Use -v or --verbose to show warnings and any additional text output.
++ 
+Use -vv to add informative logging.
++
+Use -vvv to add debug logging and full stack on any errors. (equivalent to
+-v --debug)
