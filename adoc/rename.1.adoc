@@ -1,4 +1,4 @@
-= RENAME(1)
+= GLOBUS RENAME(1)
 
 == NAME
 

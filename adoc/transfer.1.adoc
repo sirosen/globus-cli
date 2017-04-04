@@ -1,4 +1,4 @@
-= TRANSFER(1)
+= GLOBUS TRANSFER(1)
 
 == NAME
 
