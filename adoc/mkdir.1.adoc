@@ -14,6 +14,10 @@ The *globus mkdir* command creates a directory on the given endpoint and path.
 
 include::include/cli_autoactivate.adoc[]
 
+== OPTIONS
+
+include::include/common_options.adoc[]
+
 == EXAMPLES
 
 Create a directory under your home directory:
