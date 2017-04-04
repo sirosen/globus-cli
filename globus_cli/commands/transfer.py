@@ -73,7 +73,7 @@ from globus_cli.services.transfer import get_client, autoactivate
               help=('How will the Transfer Task determine whether or not to '
                     'actually transfer a file over the network?'))
 @click.option('--preserve-mtime', is_flag=True, default=False,
-              help=('Preserve file and directory modification times.'))
+              help=('Preserve file modification times.'))
 @click.option('--verify-checksum/--no-verify-checksum', default=True,
               show_default=True,
               help=('Verify checksum after transfer.'))
