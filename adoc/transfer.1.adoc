@@ -145,3 +145,5 @@ $ globus transfer $source_ep $dest_ep --batch
 /share/godata ~/mygodatadir -r
 <EOF>
 ----
+
+include::include/exit_status.adoc[]

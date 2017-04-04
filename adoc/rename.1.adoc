@@ -10,10 +10,10 @@ globus rename - Rename a file or directory on an endpoint
 
 == DESCRIPTION
 
-The *rename* command renames a file or directory on an endpoint.  
+The *globus rename* command renames a file or directory on an endpoint.
 
-The old path must be an existing file or directory.  The new path must not yet
-exist.  
+The old path must be an existing file or directory. The new path must not yet
+exist.
 
 The new path does not have to be in the same directory as the old path, but
 most endpoints will require it to stay on the same filesystem (you can not
