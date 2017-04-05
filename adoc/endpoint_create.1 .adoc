@@ -1,0 +1,67 @@
+= GLLBUS ENDPOINT CREATE(1)
+
+== NAME
+
+globus endpoint create - Create a new 
+
+
+== SYNOPSIS
+
+*globus endpoint create* 'OPTIONS' 'DISPLAY_NAME'
+
+
+== DESCRIPTION
+
+The *globus endpoint create* command creates a new endpoint. A display name
+and exactly one of --personal, --server, or --shared is required to make a
+Globus Connect Personal, Globus Connect Server, or shared endpoint
+respectively.
+
+
+== OPTIONS
+
+*--personal*::
+
+Create a Globus Connect Personal endpoint. The Setup Key printed will
+need to be given to Globus Connect Personal to make the endpoint functional.
+Mutually exclusive with --server and --shared.
+
+*--server*::
+
+Create a Globus Connect Server endpoint. Additional server documents will need
+to be added with 'globus endpoint server add' to make the endpoint functional.
+Mutually exclusive with --server and --shared.
+
+*--shared* 'HOST_ENDPOINT_ID:HOST_PATH'::
+
+Create a shared endpoint hosted on the given endpoint and path. Note that
+many of the options below cannot be set on shared endpoints as they are
+determined by the endpoint the shared endpoint is hosted on. Mutually exclusive
+with --personal and --server.
+
+include::include/endpoint_options.adoc[]
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Create a Globus Connect Personal endpoint:
+
+----
+$ globus endpoint create --personal my_gcp_endpoint
+----
+
+Create a Globus Connect Server endpoint:
+----
+$ globus endpoint create --server my_gcs_endpoint
+----
+
+Create a shared endpoint hosted on another endpoint:
+----
+$ host_ep=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint create --shared my_shared_endpoint host_ep:~/ 
+----
+
+
+include::include/exit_status.adoc[]
