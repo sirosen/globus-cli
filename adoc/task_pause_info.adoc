@@ -1,0 +1,33 @@
+= GLOBUS TASK PAUSE-INFO(1)
+
+== NAME
+
+globus task pause-info - Show why a Task is paused
+
+
+== SYNOPSIS
+
+*globus task pause-info* ['OPTIONS'] 'TASK_ID'
+
+
+== DESCRIPTION
+
+The *globus task pause-info* command shows messages from activity managers who
+have explicitly paused the given in-progress task and list any active pause
+rules that apply to it.
+It displays no information for tasks which are not paused.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Show why a task is paused, producing JSON output:
+
+----
+$ globus task pause-info TASK_ID --format JSON
+----
+
+include::include/exit_status.adoc[]

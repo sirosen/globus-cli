@@ -1,0 +1,58 @@
+= GLOBUS TASK WAIT(1)
+
+== NAME
+
+globus task wait - Wait for a Task to complete
+
+== SYNOPSIS
+
+*globus task wait* ['OPTIONS'] 'TASK_ID'
+
+*globus task wait* *--timeout* 'N' *--polling-interval* 'M' *--heartbeat* ['OPTIONS'] 'TASK_ID'
+
+
+== DESCRIPTION
+
+The *globus task wait* command polls a task to see if it has completed. It
+waits until the timeout is reached, checking every *M* seconds (where *M* is
+the polling interval).
+
+If the task succeeds by then, it exits with status 0. Otherwise, it exits with
+status 1.
+
+== OPTIONS
+
+*--timeout* 'N'::
+
+Wait a maximum of 'N' seconds. If omitted, *globus task wait* will wait
+indefinitely, until the task succeeds or fails.
+
+*--polling-interval* 'M'::
+
+Check task status (and potentially hearbeat) every 'M' seconds. Defaults to 1.
+
+*-H/--heartbeat*::
+
+Turn on heartbeats. When set, a '.' character will be printed to standard error
+every polling interval.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Wait 30 seconds for a task to complete, printing heartbeats to stderr and
+producing a JSON description of the task at the end:
+
+----
+$ globus task wait --timeout 30 -H --format json TASK_ID
+----
+
+Wait for a task without limit, silently, polling every 5 minutes:
+
+----
+$ globus task wait --polling-interval 300 TASK_ID
+----
+
+
+include::include/exit_status.adoc[]

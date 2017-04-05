@@ -1,0 +1,91 @@
+= GLOBUS TASK LIST(1)
+
+== NAME
+
+globus task list - List tasks for the current user
+
+== SYNOPSIS
+
+*globus task list* ['OPTIONS']
+
+== DESCRIPTION
+
+The *globus task list* command lists the current user's most recent tasks. The
+tasks displayed may be filtered by a number of attributes, each with a separate
+commandline option.
+
+
+== OPTIONS
+
+*--limit* 'N'::
+
+Limit the number of results to the 'N' most recent. Default value is 10.
+
+*--filter-task-id* 'UUID'::
+
+Filter the tasks to those matching this UUID. This option can be
+used multiple times, meaning that any matching Task IDs are allowed.
+
+*--filter-type* '[TRANSFER|DELETE]'::
+
+Filter results to only 'TRANSFER' or 'DELETE' tasks.
+
+*--filter-status* '[ACTIVE|INACTIVE|FAILED|SUCCEEDED]'::
+
+Task status to filter results by. This option can be used multiple times,
+meaning that any matching status is allowed.
+
+*--filter-label* 'TEXT'::
+
+Filter results to task whose label matches a pattern. This option can be used
+multiple times, meaning that any matching label is allowed.
+
+*--filter-not-label* 'TEXT'::
+
+Filter results whose label does not match a pattern. This option can be used
+multiple times, meaning any non-matching patterns are excluded.
+
+*--inexact/--exact*
+
+When *--exact* is given *--filter-label* and *--filter-not-label* must be exact
+matches. When *--inexact* is given, these patterns may include '*' as a
+wild-card, and may ignore case.
+
+*--filter-requested-after* 'ISO_TIME'::
+
+Filter results to tasks that were requested after given time.
+
+*--filter-requested-before* 'ISO_TIME'::
+
+Filter results to tasks that were requested before given time.
+
+*--filter-completed-after* 'ISO_TIME'::
+
+Filter results to tasks that were completed after given time.
+
+*--filter-completed-before* 'ISO_TIME'::
+
+Filter results to tasks that were completed before given time.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+List results in a text table:
+
+----
+$ globus task list
+----
+
+List the first 100 tasks which were completed between May 2015 and July 2015,
+but whose labels aren't the exact string 'autolabel':
+
+----
+$ globus task list --limit 100 \
+    --filter-completed-after 2015-05-01 \
+    --filter-completed-before 2015-07-30 \
+    --filter-not-label 'autolabel' --exact
+----
+
+include::include/exit_status.adoc[]

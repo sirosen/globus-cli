@@ -1,0 +1,37 @@
+= GLOBUS TASK SHOW(1)
+
+== NAME
+
+globus task show - Show detailed information about a specific task
+
+== SYNOPSIS
+
+*globus task show* ['OPTIONS'] 'TASK_ID'
+
+== DESCRIPTION
+
+The *globus task show* command prints information to standard out detailing the
+status and other info about a task. The task may be pending, completed, or in
+progress.
+
+
+== OPTIONS
+
+*-t/--successful-transfers*::
+
+Show files that were successfully transferred as a result of this task. This
+option completely changes the output, only producing this information and no
+other task details.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Show detailed info about a task as text
+
+----
+$ globus task show TASK_ID
+----
+
+include::include/exit_status.adoc[]

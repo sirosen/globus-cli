@@ -1,0 +1,8 @@
+*--jq, --jmespath* 'EXPR'::
+
+Supply a JMESPath expression to apply to json output.
+Takes precedence over any specified '--format' and forces the format to be json
+processed by this expression.
+
+A full specification of the JMESPath language for querying JSON structures may
+be found at https://jmespath.org/
