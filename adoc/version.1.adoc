@@ -18,17 +18,6 @@ for how to update the CLI.
 
 == OPTIONS
 
-*-h, --help*::
+include::include/help_and_verbose_options.adoc[]
 
-Show help text for this command.
-
-*-v, --verbose*::
-
-Control the level of output. 
-+
-Use -v or --verbose to show warnings and any additional text output.
-+ 
-Use -vv to add informative logging.
-+
-Use -vvv to add debug logging and full stack on any errors. (equivalent to
--v --debug)
+include::include/exit_status.adoc[]
