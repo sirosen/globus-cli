@@ -1,0 +1,38 @@
+= GLOBUS LOGOUT(1)
+
+== NAME
+
+globus logout - Logout of the Globus CLI
+
+== SYNOPSIS
+
+*globus logout* ['OPTIONS']
+
+== DESCRIPTION
+
+The *globus logout* command both removes all tokens used for authenticating
+the user from local storage and revokes them so that they cannot be used
+anymore globally.
+
+If an expected token cannot be found in local storage a warning will be raised
+as it is possible the token still exists and needs to be manually rescinded
+at https://auth.globus.org/consents for security.
+
+== OPTIONS
+
+*--yes*::
+
+Automatically say yes to the "Are you sure you want to logout?" prompt.
+
+include::include/help_and_verbose_options.adoc[]
+
+== EXAMPLES
+
+Rename a directory:
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus rename $ep_id:~/tempdir $ep_id:~/project-foo
+----
+
+include::include/exit_status.adoc[]
