@@ -20,5 +20,5 @@ Use -v or --verbose to show warnings and any additional text output.
 + 
 Use -vv to add informative logging.
 +
-Use -vvv or to add debug logging and full stack on any errors. (equivalent to
+Use -vvv to add debug logging and full stack on any errors. (equivalent to
 -v --debug)
