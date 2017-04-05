@@ -57,6 +57,8 @@ allows the current user)
 
 Filter endpoints where the endpoint is owned by the given identity.
 
+include::include/common_options.adoc[]
+
 
 == EXAMPLES
 
