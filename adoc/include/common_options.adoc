@@ -4,8 +4,8 @@ Map non success HTTP response codes to exit codes other than 1.
 e.g. "--map-http-satus 403=0,404=0" would exit with 0 even if a 403
 or 404 http error code was received. Valid exit codes are 0,1,50-99.
 
-*-F, --format* '[json|text]'::
+include::format_option.adoc[]
 
-Set the output format for stdout. Defaults to "text".
+include::help_option.adoc[]
 
-include::help_and_verbose_options.adoc[]
+include::verbose_option.adoc[]

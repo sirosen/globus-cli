@@ -1,0 +1,3 @@
+*-F, --format* '[json|text]'::
+
+Set the output format for stdout. Defaults to "text".

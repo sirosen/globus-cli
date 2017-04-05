@@ -18,6 +18,9 @@ for how to update the CLI.
 
 == OPTIONS
 
-include::include/help_and_verbose_options.adoc[]
+include::include/help_option.adoc[]
 
-include::include/exit_status.adoc[]
+include::include/verbose_option.adoc[]
+
+
+include::include/exit_status_no_http.adoc[]

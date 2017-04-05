@@ -24,8 +24,9 @@ at https://auth.globus.org/consents for security.
 
 Automatically say yes to the "Are you sure you want to logout?" prompt.
 
-include::include/help_and_verbose_options.adoc[]
+include::include/help_option.adoc[]
 
-----
+include::include/verbose_option.adoc[]
 
-include::include/exit_status.adoc[]
+
+include::include/exit_status_no_http.adoc[]

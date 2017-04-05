@@ -37,8 +37,9 @@ Use manual login. You will be given a link to follow and must respond with
 a copied and pasted access code from that link. Implied if the CLI detects you
 are on a remote session.
 
-include::include/help_and_verbose_options.adoc[]
+include::include/help_option.adoc[]
 
-----
+include::include/verbose_option.adoc[]
 
-include::include/exit_status.adoc[]
+
+include::include/exit_status_no_http.adoc[]

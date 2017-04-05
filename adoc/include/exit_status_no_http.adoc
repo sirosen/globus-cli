@@ -1,0 +1,7 @@
+== EXIT STATUS
+
+0 on success.
+
+1 if a network or server error occurred.
+
+2 if the command was used improperly.
