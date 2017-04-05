@@ -1,0 +1,109 @@
+= GLOBUS ENDPOINT ACTIVATE(1)
+
+== NAME
+
+globus endpoint activate - Activate an endpoint for use
+
+
+== SYNOPSIS
+
+*globus endpoint activate* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+*globus endpoint activate* activates an endpoint for use by assigning a short
+term security credential to that endpoint.
+
+The Globus CLI can activate using Automatic activation, Myproxy activation, or
+Web activation. Note that --myproxy and --web are mutually exclusive options.
+
+Autoactivation will always be attempted unless the --no-autoactivate
+option is given. If autoactivation succeeds any other activation options
+will be ignored as the endpoint has already been successfully activated.
+
+To use Web activation use the --web option.
+The CLI will try to open your default browser to the endpoint's activation
+page, but if a remote CLI session is detected, or the --no-browser option
+is given, a url will be printed for you to manually follow and activate
+the endpoint.
+
+To use Myproxy activation give the --myproxy option.
+Myproxy activation requires your username and password for the myproxy
+server the endpoint is using for authentication. e.g. for default
+Globus Connect Server endpoints this will be your login credentials for the
+server the endpoint is hosted on.
+
+You can enter your username when prompted, give your username with the
+--myproxy-username option, or set a default myproxy username in config
+with "globus config init" or "globus config set
+cli.default_myproxy_username".
+
+For security it is recommended that you only enter your password when
+prompted to hide your inputs and keep your password out of your command
+history, but you may pass your password with the --myproxy-password
+or -P options.
+
+
+== OPTIONS
+
+*--web*::                 
+
+Use web activation. Mutually exclusive with --myproxy.
+
+*--no-browser*::
+
+If using --web, Give a url to manually follow instead of opening your default
+web browser. Implied if on a remote session.
+
+*--myproxy*                    
+
+Use myproxy activation. Mutually exclusive with --web
+
+*-U, --myproxy-username* TEXT::
+
+Give a username to use with --myproxy skipping the username prompt. 
+Overrides any default myproxy username set in config.
+
+*-P, --myproxy-password* TEXT::
+
+*Warning: It is not recommended to use this option as it will leave your 
+password in plain-text in your command history.* Give a password to use with
+--myproxy, skipping the password prompt.
+
+*--no-autoactivate*::
+
+Don't attempt to autoactivate the endpoint before using --web or --myproxy 
+activation.
+
+*--force*::
+
+Force activation even if the endpoint is already activated.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Activate an endpoint using just Automatic activation:
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint activate $ep_id
+----
+
+Activate an endpoint using Web activation
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint activate $ep_id --web
+----
+
+Activate an endpoiont using Myproxy activation, skipping the username prompt.
+----
+$ ep_id=2fa7dd54-0f40-11e7-bb43-22000b9a448b
+$ globus endpoint activate $ep_id --myproxy -U username
+----
+
+
+include::include/exit_status.adoc[]
