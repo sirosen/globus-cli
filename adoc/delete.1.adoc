@@ -1,0 +1,105 @@
+= GLOBUS DELETE(1)
+
+== NAME
+
+globus delete - Submit a delete task
+
+
+== SYNOPSIS
+
+*globus delete* ['OPTIONS'] -- ENDPOINT_ID:PATH
+
+*globus delete* ['OPTIONS'] ENDPOINT_ID --batch *<* 'INPUT_LINE(s)'...
+
+
+== DESCRIPTION
+
+The *globus delete* command submits an asynchronous task that deletes files
+and/or directories on the target endpoint.
+
+*globus delete* has two modes. Single target, which deletes one
+file or one directory, and batch, which takes in several lines to delete 
+multiple files or directories. See "Batch Input" below for more information.
+
+Symbolic links are never followed - only unlinked (deleted).
+
+
+include::include/cli_autoactivate.adoc[]
+
+
+== Batch Input
+
+If you give a SOURCE_PATH without the --batch flag, you will submit a 
+single-file or single-directory delete task. This has
+behavior similar to `cp` and `cp -r`, across endpoints.
+
+Using `--batch`, *globus delete* can submit a task which deletes
+multiple files or directories. Lines are taken from stdin, respecting quotes, 
+and every line is treated as a path to a file or directory to delete.
+
+Lines are of the form
+PATH
+
+Note that unlike 'globus transfer' --recursive is not an option at the per line
+level, instead, if given with the original command, all paths that point to
+directories will be recursively deleted.
+
+Empty lines and comments beginning with '#' are ignored.
+
+Batch only requires an ENDPOINT before passing lines, on stdin, but if you pass
+an ENPDOINT:PATH on the original command, this path will be used as a prefixes
+to all paths on stdin.
+
+
+== OPTIONS
+
+*--batch*::
+
+Starts batch mode input for deletes, which takes in paths one line at a time
+from stdin to delete multiple files and/or directories. See "Batch Input"
+above for more information.
+
+*-r, --recursive*::
+
+Delete any directories recursively. Note that unlike 'globus transfer'
+this option need only be given once at the command level rather than per line
+if using batch input.
+
+*-f, ignore-missing*::
+
+Ignore nonexistent files and directories. The task will succeed even if given
+paths do not exist.
+
+include::include/task_submission_options.adoc[]
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Delete a single file.
+----
+$ ep_id=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus delete $ep_id:~/myfile.txt
+----
+
+Delete a directory recursively.
+
+----
+$ ep_id=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus delete $ep_id:~/mydir --recursive
+----
+
+Use the batch input method to transfer multiple files and or dirs.
+
+----
+$ ep_id=ddb59af0-6d04-11e5-ba46-22000b92c6ec
+$ globus delete $ep_id --batch --recursive
+~/myfile1.txt
+~/myfile2.txt
+~/myfile3.txt
+~/mygodatadir
+<EOF>
+----
+
+include::include/exit_status.adoc[]
