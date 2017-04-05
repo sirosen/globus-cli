@@ -1,0 +1,43 @@
+= GLOBUS LOGIN(1)
+
+== NAME
+
+globus login - Login to Globus to get credentials for the Globus CLI
+
+== SYNOPSIS
+
+*globus login* ['OPTIONS']
+
+== DESCRIPTION
+
+The *globus login* command directs you to the page necessary to permit the
+Globus CLI to make API calls for you, and gets the OAuth2 tokens needed
+to use those permissions.
+
+The default login method opens your browser to the Globus CLI's authorization
+page, where you can read and consent to the permissions required to use the
+Globus CLI. The CLI then takes care of getting the credentials through a
+local server.
+
+If the CLI detects you are on a remote session, or use the 
+--no-local-server option, the CLI will instead print a link for you to manually
+follow to the Globus CLI's authorization page. After consenting, You will then
+need to copy and paste the given access code from the web to the CLI.
+
+== OPTIONS
+
+*--force*::
+
+Login even if the CLI already has valid login credentials.
+
+*--no-local-server*::
+
+Use manual login. You will be given a link to follow and must respond with
+a copied and pasted access code from that link. Implied if the CLI detects you
+are on a remote session.
+
+include::include/help_and_verbose_options.adoc[]
+
+----
+
+include::include/exit_status.adoc[]
