@@ -28,7 +28,8 @@ need to copy and paste the given access code from the web to the CLI.
 
 *--force*::
 
-Login even if the CLI already has valid login credentials.
+Login even if the CLI already has valid login credentials. Any existing
+credentials will be removed from local storage and globally revoked.
 
 *--no-local-server*::
 
