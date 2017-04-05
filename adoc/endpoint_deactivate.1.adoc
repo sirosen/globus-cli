@@ -1,0 +1,34 @@
+= GLOBUS ENDPOINT DEACTIVATE(1)
+
+== NAME
+
+globus endpoint deactivate - Remove endpoint activation credentials
+
+
+== SYNOPSIS
+
+*globus endpoint deactivate* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+*globus endpoint deactivate* removes the credential previously assigned to an
+endpoint by 'globus endpoint activate'.  
+
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Deactivate an endpoint:
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint deactivate $ep_id
+----
+
+
+include::include/exit_status.adoc[]
