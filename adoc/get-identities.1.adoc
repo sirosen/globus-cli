@@ -1,0 +1,49 @@
+= GLOBUS GET-IDENTITIES(1)
+
+== NAME
+
+globus get-identities - Lookup Globus Auth Identities
+
+== SYNOPSIS
+
+*globus get-identites* ['OPTIONS'] ['UUID_OR_USERNAME(s)']
+
+== DESCRIPTION
+
+The *globus get-identities* command takes in one or more user IDs and/or
+usernames for Globus Auth identities, and looks up those identities.
+
+Default output resolves each UUID to a username and each username to a UUID,
+with one output per line in the same order as the inputs.
+If a particular input had no corresponding identity in Globus Auth,
+"NO_SUCH_IDENTITY" is printed instead.
+
+If more fields are desired, --verbose will give tabular output, but does not
+guarantee order and ignores inputs with no corresponding Globus Auth identity.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== EXAMPLES
+
+Resolve a user ID (outputs the user's username)
+
+----
+$ globus get-identities c699d42e-d274-11e5-bf75-1fc5bf53bb24
+----
+
+Resolve a username (outputs the user's ID)
+
+----
+$ globus get-identities go@globusid.org
+----
+
+Resolve multiple usernames and or IDs with tabular output
+
+----
+$ globus get-identities --verbose go@globusid.org clitester1a@globusid.org \
+84942ca8-17c4-4080-9036-2f58e0093869
+----
+
+include::include/exit_status.adoc[]
