@@ -1,0 +1,65 @@
+= GLOBUS LS(1)
+
+== NAME
+
+globus ls - List endpoint directory contents
+
+== SYNOPSIS
+
+*globus ls* ['OPTIONS'] 'ENDPOINT_ID[:PATH]'
+
+
+== DESCRIPTION
+
+The *globus ls* command lists files and subdirectories on an endpoint. If no
+path is given, the default directory on that endpoint will be used.
+
+Files and directories are printed with one entry per line in alphabetical
+order.  Directories are always displayed with a trailing "/".
+
+include::include/cli_autoactivate.adoc[]
+
+
+== OPTIONS
+
+*-a, --all*::
+
+Show hidden files and directories that start with '.'
+
+*-l, --long*::
+
+Long form tabular output similar to 'ls -l'.
+
+*-r, --recursive*::
+
+Do a recursive listing similar to 'ls -R' only goes as deep as allowed by
+the --recursive-depth-limit. Note that this can quickly become a very expensive
+operation and may take a significant amount of time to complete or even fail on
+rate limits.
+
+*--recursive-depth-limit*::
+
+Set the depth limit when using the --recursive option. Defaults to 3 if not
+given.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+List files and dirs in your default directory on an endpoint.
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ ls $ep_id
+----
+
+List files and dirs on a specific path on an endpoint.
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ ls $ep_id:/share/godata/
+----
+
+
+include::include/exit_status.adoc[]
