@@ -1,0 +1,76 @@
+= GLOBUS ENDPOINT SEARCH(1)
+
+== NAME
+
+globus endpoint search - Search and discover endpoints
+
+== SYNOPSIS
+
+*globus endpoint search* ['OPTIONS'] 'FILTER_FULLTEXT'
+
+*globus endpoint search* --filter-scope SCOPE ['OPTIONS'] ['FILTER_FULLTEXT']
+
+
+== DESCRIPTION
+
+The *globus endpoint search* command searches for endpoints with search
+filters. If --filter-scope is set to the default of all, then
+FILTER_FULLTEXT is required.
+
+If FILTER_FULLTEXT is given endpoints which have attributes (display name,
+legacy name, description, organization, department, keywords) that match the
+'SEARCH' text will be returned.  The current result size limit is 100 endpoints.
+
+== OPTIONS
+
+*--filter-scope* 'SCOPE'::
+
+Search only endpoints in the specified 'SCOPE' (category).  If this option is
+not specified, the scope is "all".  Valid values for 'SCOPE' are:
++
+all (default);;
+All endpoints for which the current user has visibility (e.g. this includes
+public endpoints owned by other users, and private and public endpoints owned
+by the current user).  A 'SEARCH' argument is required for this scope.
++
+my-endpoints;;
+Endpoints of any type created by the current user.
++
+my-gcp-endpoints;;
+Globus Connect Personal endpoints created by the current user.
++
+in-use;;
+Endpoints that have active or pending tasks submitted by the current user
++
+recently-used;;
+Endpoints that have been used for tasks submitted by the current user in the
+last 90 days.  
++
+shared-by-me;;
+Shared endpoints created by the current user
++
+shared-with-me;;
+Shared endpoints the current user has access to (i.e. the ACL
+allows the current user)
+
+*--filter-owner-id* 'UUID_OR_USERNAME'::
+
+Filter endpoints where the endpoint is owned by the given identity.
+
+
+== EXAMPLES
+
+Search for the Globus tutorial endpoints
+
+----
+$ globus endpoint search Tutorial --filter-owner-id go@globusid.org
+----
+
+Search for endpoints owned by the current user
+
+----
+$ globus endpoint search --filter-scope my-endpoints
+----
+
+
+include::include/exit_status.adoc[]
