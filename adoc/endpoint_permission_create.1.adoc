@@ -1,0 +1,67 @@
+= GLOBUS ENDPOINT PERMISSION CREATE(1)
+
+== NAME
+
+globus endpoint permission create - Create an access control rule
+
+
+== SYNOPSIS
+
+*globus endpoint permission create* --permissions 'OPTIONS' 'ENDPOINT_ID:PATH'
+
+
+== DESCRIPTION
+
+The *globus endpoint permission create* creates a new access control on the 
+the target endpoint granting users new permissions on the given path.
+
+The target endpoint must be a shared endpoint or an s3 endpoint, as only these
+use access control lists to manage permissions.
+
+The permissions option is required, and exactly one of --all-authenticated
+--anonymous --group or identity is required to know who to give what
+permissions to.
+
+== OPTIONS
+
+*--permissions* '[r|rw]'::
+
+Permissions to add. Read-Only or Read/Write. Required.
+
+*--all-authenticated*::
+
+Give this permission to anyone who has logged in.
+
+*--anonymous*::
+
+Give this permission to anyone even if they aren't logged in.
+
+*--group* 'GROUP_ID'::                
+
+Give this permission to anyone in the given group.
+
+*--identity* 'IDENTITY_ID_OR_NAME'::
+
+Give this permission to a specific identity in Globus Auth.
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Give anyone read access to a directory.
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint permission create $ep_id:/dir --permissions r --anonymous
+----
+
+Give read and write access to a specific user.
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint permission create $ep_id:/ --permissions rw --identity go@globusid.org
+----
+
+
+include::include/exit_status.adoc[]
