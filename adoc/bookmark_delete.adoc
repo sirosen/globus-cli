@@ -1,0 +1,34 @@
+= GLOBUS BOOKMARK DELETE(1)
+
+== NAME
+
+globus bookmark delete - Delete a Bookmark
+
+== SYNOPSIS
+
+*globus bookmark delete* ['OPTIONS'] 'BOOKMARK_ID'
+
+
+== DESCRIPTION
+
+The *globus bookmark delete* command deletes one bookmark, given its ID.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When textual output is requested, the response contains a message indicating
+the success or failure of the operation.
+
+== EXAMPLES
+
+Delete a bookmark:
+
+----
+$ globus bookmark delete BOOKMARK_ID
+----
+
+
+include::include/exit_status.adoc[]

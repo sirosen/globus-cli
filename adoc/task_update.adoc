@@ -31,6 +31,10 @@ the task will terminate with a failure status.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+When text output is requested, the output will be a simple success message (or
+an error).
 
 == EXAMPLES
 

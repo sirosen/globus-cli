@@ -24,6 +24,10 @@ submissions.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+When text output is requested, the generated 'UUID' is the only output.
+
 
 == EXAMPLES
 

@@ -25,6 +25,9 @@ often resolvable -- at which point the task would retry succeed.
 Events may be filtered using *--filter-errors* or *--filter-non-errors*, but
 these two options may not be used in tandem.
 
+NOTE: Tasks older than one month may no longer have event log history. In this
+case, no events will be shown.
+
 == OPTIONS
 
 *--limit* 'N'::
@@ -41,6 +44,14 @@ Only show non-fault events.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+When output is in text mode, the following fields are used:
+
+- 'Time'
+- 'Code'
+- 'Is Error'
+- 'Details'
 
 == EXAMPLES
 

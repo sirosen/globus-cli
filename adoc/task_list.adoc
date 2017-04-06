@@ -69,6 +69,17 @@ Filter results to tasks that were completed before given time.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+When text output is requested, the following fields are used:
+
+- 'Task ID'
+- 'Status'
+- 'Type'
+- 'Source Display Name'
+- 'Dest Display Name'
+- 'Label'
+
 
 == EXAMPLES
 

@@ -27,6 +27,18 @@ When given, 'TASK_ID' is not required. Cancel all pending and executing tasks.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+Output depends on whether or not *--all* was provided, and of course on the
+requested output format.
+If *--all* is requested, output will contain all task IDs which were
+cancelled. If, in addition to this, the output format is text, the results will
+be streamed as tasks are cancelled. JSON output is buffered and printed all at
+once, after all of the cancellations.
+
+When *--all* is not passed, output is a simple success message indicating that
+the task was cancelled, or an error.
+
 
 == EXAMPLES
 

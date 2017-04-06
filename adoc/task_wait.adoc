@@ -38,6 +38,13 @@ every polling interval.
 
 include::include/common_options.adoc[]
 
+== OUTPUT
+
+When text output is requested, no output is written to standard out. All output
+is written to standard error.
+
+When JSON output is requested, the standard error output remains, but the task
+status after waiting will be sent to stdout.
 
 == EXAMPLES
 

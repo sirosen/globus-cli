@@ -1,0 +1,36 @@
+= GLOBUS BOOKMARK LIST(1)
+
+== NAME
+
+globus bookmark list - List all of the current user's bookmarks
+
+== SYNOPSIS
+
+*globus bookmark list* ['OPTIONS']
+
+
+== DESCRIPTION
+
+The *globus bookmark list* command lists all of your bookmarks.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When textual output is requested, the following fields are displayed:
+- 'Name'
+- 'Bookmark ID'
+- 'Endpoint ID'
+- 'Endpoint Name'
+- 'Path'
+
+== EXAMPLES
+
+----
+$ globus bookmark list
+----
+
+
+include::include/exit_status.adoc[]
