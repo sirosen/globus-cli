@@ -1,0 +1,39 @@
+= GLLBUS ENDPOINT UPDATE(1)
+
+== NAME
+
+globus endpoint update - Create a new 
+
+
+== SYNOPSIS
+
+*globus endpoint update* 'OPTIONS' 'DISPLAY_NAME'
+
+
+== DESCRIPTION
+
+The *globus endpoint update* command updates fields on an existing endpoint.
+
+
+== OPTIONS
+
+*--display-name* 'TEXT'::
+
+The name of this endpoint. (Note this is not the depreciated canonical name.)
+
+include::include/endpoint_options.adoc[]
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+Change an existing endpoint's display-name and set it to be publicly viewable
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint update $ep_id --display-name "New endpoint" --public
+----
+
+
+include::include/exit_status.adoc[]
