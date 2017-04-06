@@ -1,0 +1,34 @@
+= GLLBUS ENDPOINT MY-SHARED-ENDPOINT-LIST(1)
+
+== NAME
+
+globus endpoint my-shared-endpoint-list - Show all of the user's shared
+endpoints hosted on an endpoint.
+
+
+== SYNOPSIS
+
+*globus endpoint my-shared-endpoint-list* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint my-shared-endpoint-list* command shows a list of all 
+shared endpoints hosted on the target endpoint for which the user has the 
+"administrator" or "access_manager" effective roles.
+
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint my-shared-endpoint-list $ep_id
+----
+
+
+include::include/exit_status.adoc[]
