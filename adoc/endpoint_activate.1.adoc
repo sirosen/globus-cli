@@ -56,7 +56,7 @@ Use web activation. Mutually exclusive with --myproxy.
 If using --web, Give a url to manually follow instead of opening your default
 web browser. Implied if on a remote session.
 
-*--myproxy*                    
+*--myproxy*::
 
 Use myproxy activation. Mutually exclusive with --web
 
