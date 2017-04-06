@@ -67,9 +67,10 @@ Overrides any default myproxy username set in config.
 
 *-P, --myproxy-password* TEXT::
 
-*Warning: It is not recommended to use this option as it will leave your 
-password in plain-text in your command history.* Give a password to use with
---myproxy, skipping the password prompt.
+WARNING: It is not recommended to use this option as it will leave your 
+password in plain-text in your command history.
++
+Give a password to use with--myproxy, skipping the password prompt.
 
 *--no-autoactivate*::
 
