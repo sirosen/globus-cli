@@ -2,12 +2,12 @@
 
 == NAME
 
-globus endpoint update - Create a new 
+globus endpoint update - Update attributes of an existing endpoint
 
 
 == SYNOPSIS
 
-*globus endpoint update* 'OPTIONS' 'DISPLAY_NAME'
+*globus endpoint update* ['OPTIONS']
 
 
 == DESCRIPTION
