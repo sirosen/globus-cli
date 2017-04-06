@@ -1,0 +1,41 @@
+= GLLBUS ENDPOINT IS-ACTIVATED(1)
+
+== NAME
+
+globus endpoint is-activated - Check if an endpoint is activated
+
+
+== SYNOPSIS
+
+*globus endpoint is-activated* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint is-activated* command checks if an endpoint is already
+activated or requires activation to be used. If the endpoint is not activated
+a link will be given for web activation, or you can use 
+*globus endpoint activate* to activate the endpoint.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== EXAMPLES
+
+----
+$ ep_id=ddb59aef-6d04-11e5-ba46-22000b92c6ec
+$ globus endpoint is-activated $ep_id
+----
+
+
+== EXIT STATUS
+
+0 if the endpoint is activated.
+
+1 if the endpoint is not activated, unless --map-http-status has been
+used to change exit behavior on http error codes.
+
+2 if the command was used improperly.
+
