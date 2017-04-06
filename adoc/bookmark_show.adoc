@@ -1,0 +1,49 @@
+= GLOBUS BOOKMARK SHOW(1)
+
+== NAME
+
+globus bookmark show - Show bookmark details, or display it in the form of
+'ENDPOINT_ID:PATH'
+
+== SYNOPSIS
+
+*globus bookmark show* ['OPTIONS'] 'BOOKMARK_ID_OR_NAME'
+
+*globus bookmark show* *--verbose* ['OPTIONS'] 'BOOKMARK_ID_OR_NAME'
+
+
+== DESCRIPTION
+
+The *globus bookmark show* command takes a single bookmark ID or bookmark name
+and shows the bookmark details. By default, when the format is TEXT, this will
+display the endpoint ID and path in 'ENDPOINT_ID:PATH' notation.
+
+If *-v/--verbose* is given, several fields will be displayed.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When textual output is requested, the output varies depending on verbosity.
+
+By default, output is simply 'ENDPOINT_ID:PATH'
+
+If *-v* or *--verbose* is given, output has the following fields:
+
+- 'ID'
+- 'Name'
+- 'Endpoint ID'
+- 'Path'
+
+== EXAMPLES
+
+Resolve a bookmark, for use in another command:
+
+----
+$ globus ls "$(globus bookmark show BOOKMARK_NAME)"
+----
+
+
+include::include/exit_status.adoc[]

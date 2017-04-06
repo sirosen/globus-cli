@@ -1,0 +1,59 @@
+= GLOBUS TASK CANCEL(1)
+
+== NAME
+
+globus task cancel - Cancel a Task owned by the current user
+
+== SYNOPSIS
+
+*globus task cancel* ['OPTIONS'] 'TASK_ID'
+
+*globus task cancel* *--all* ['OPTIONS']
+
+
+== DESCRIPTION
+
+The *globus task cancel* command cancels a specific task which you own or all
+tasks which you own. This includes not only currently executing tasks, but also
+any queued tasks which you may have which have not started execution.
+
+You must either provide the *--all* option or a 'TASK_ID'.
+
+== OPTIONS
+
+*-a/--all*::
+
+When given, 'TASK_ID' is not required. Cancel all pending and executing tasks.
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+Output depends on whether or not *--all* was provided, and of course on the
+requested output format.
+If *--all* is requested, output will contain all task IDs which were
+cancelled. If, in addition to this, the output format is text, the results will
+be streamed as tasks are cancelled. JSON output is buffered and printed all at
+once, after all of the cancellations.
+
+When *--all* is not passed, output is a simple success message indicating that
+the task was cancelled, or an error.
+
+
+== EXAMPLES
+
+Cancel a specific task
+
+----
+$ globus task cancel TASK_ID
+----
+
+Cancel all tasks
+
+----
+$ globus task cancel --all
+----
+
+
+include::include/exit_status.adoc[]
+

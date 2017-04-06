@@ -1,0 +1,47 @@
+= GLOBUS BOOKMARK CREATE(1)
+
+== NAME
+
+globus bookmark create - Create a new bookmark
+
+== SYNOPSIS
+
+*globus bookmark create* ['OPTIONS'] 'ENDPOINT_ID:PATH' 'BOOKMARK_NAME'
+
+
+== DESCRIPTION
+
+The *globus bookmark create* command creates a new bookmark. Given an endpoint
+plus a path, and a name for the bookmark, the service will generate the
+bookmark's ID.
+
+Bookmarks are aliases for locations on endpoints, and their names are unique
+per account. You may not have multiple bookmarks with the same name. You can
+use bookmarks in other commands by using *globus bookmark show*.
+
+The new bookmark name may be up to 128 characters long.
+Bookmarks are only visible and usable for the user who created them.  If the
+target endpoint is private or deleted, the bookmark is unusable.
+
+'PATH' is assumed to be URL-encoded.  'PATH' must be a directory and end with
+"/".
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When textual output is requested, the only result shown is the ID of the
+created bookmark.
+
+== EXAMPLES
+
+Create a bookmark named 'mybookmark':
+
+----
+$ globus bookmark create 'ddb59aef-6d04-11e5-ba46-22000b92c6ec:/~/' mybookmark
+----
+
+
+include::include/exit_status.adoc[]

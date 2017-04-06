@@ -1,0 +1,34 @@
+= GLOBUS BOOKMARK RENAME(1)
+
+== NAME
+
+globus bookmark rename - Rename an existing bookmark
+
+== SYNOPSIS
+
+*globus bookmark rename* ['OPTIONS'] 'BOOKMARK_ID' 'NEW_BOOKMARK_NAME'
+
+
+== DESCRIPTION
+
+The *globus bookmark rename* command renames bookmark, given its ID.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When textual output is requested, the only output on a successful rename is a
+success message.
+
+== EXAMPLES
+
+Rename a bookmark:
+
+----
+$ globus bookmark delete BOOKMARK_ID newname
+----
+
+
+include::include/exit_status.adoc[]

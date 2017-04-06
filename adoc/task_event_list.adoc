@@ -1,0 +1,64 @@
+= GLOBUS TASK EVENT-LIST(1)
+
+== NAME
+
+globus task event-list - List Events for a given Task
+
+
+== SYNOPSIS
+
+*globus task event-list* ['OPTIONS'] 'TASK_ID'
+
+*globus task event-list* *--filter-errors* ['OPTIONS'] 'TASK_ID'
+
+*globus task event-list* *--filter-non-errors* ['OPTIONS'] 'TASK_ID'
+
+
+== DESCRIPTION
+
+The *globus task event-list* command shows the recent events for a running
+task. Most events of interest are fault events, which are errors which
+occurred on an endpoint but which are non-fatal to a task. For example,
+Permission Denied errors on an endpoint don't cancel the task because they are
+often resolvable -- at which point the task would retry succeed.
+
+Events may be filtered using *--filter-errors* or *--filter-non-errors*, but
+these two options may not be used in tandem.
+
+NOTE: Tasks older than one month may no longer have event log history. In this
+case, no events will be shown.
+
+== OPTIONS
+
+*--limit* 'N'::
+
+Restrict the event list to the last 'N' events. Default is 10.
+
+*--filter-errors*::
+
+Only show fault events.
+
+*--filter-non-errors*::
+
+Only show non-fault events.
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When output is in text mode, the following fields are used:
+
+- 'Time'
+- 'Code'
+- 'Is Error'
+- 'Details'
+
+== EXAMPLES
+
+Show why a task is paused, producing JSON output:
+
+----
+$ globus task pause-info TASK_ID --format JSON
+----
+
+include::include/exit_status.adoc[]

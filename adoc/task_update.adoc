@@ -1,0 +1,48 @@
+= GLOBUS TASK UPDATE(1)
+
+== NAME
+
+globus task update - Update label and/or deadline on an active Task
+
+== SYNOPSIS
+
+*globus task update* ['OPTIONS'] 'TASK_ID'
+
+*globus task update* *--label* 'TEXT' *--deadline* 'ISO_TIME' ['OPTIONS'] 'TASK_ID'
+
+== DESCRIPTION
+
+The *globus task update* command updates attributes on in-progress tasks.
+
+If a Task has completed, these attributes may no longer be updated.
+
+
+== OPTIONS
+
+*--label* 'TEXT'::
+
+Specify a new label for the Task. Label is a freeform text field with no
+meaning to the service -- use it to help organize your Tasks.
+
+*--deadline* 'ISO_TIME'::
+
+Specify a new deadline for the Task. If it does not complete by the deadline,
+the task will terminate with a failure status.
+
+include::include/common_options.adoc[]
+
+== OUTPUT
+
+When text output is requested, the output will be a simple success message (or
+an error).
+
+== EXAMPLES
+
+Update both label and deadline for a task
+
+----
+$ globus task update TASK_ID --label 'my task updated by me' \
+    --deadline '1987-01-22'
+----
+
+include::include/exit_status.adoc[]
