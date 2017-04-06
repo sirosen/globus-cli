@@ -1,0 +1,57 @@
+= GLLBUS ENDPOINT ROLE CREATE(1)
+
+== NAME
+
+globus endpoint role create - Add a role to an endpoint
+
+
+== SYNOPSIS
+
+*globus endpoint role create* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint role create* command adds a role to an endpoint.
+You must have sufficient privileges to modify the roles on the endpoint.
+
+Either *--group* or *--identity* is required. You may not pass both.
+Which one of these options you use will determine the 'Principal Type' on the
+role, and the value given will be the 'Principal' of the resulting role.
+The term "Principal" is used in the sense of "a security principal", an entity
+which has some privileges associated with it.
+
+== OPTIONS
+
+*--group* 'GROUP_ID'::
+
+Group to use as a security principal.
+
+*--identity* 'IDENTITY_ID_OR_NAME'::
+
+Identity (either the ID or identity username) to use as a security principal
+
+*--role* '[administrator|access_manager|activity_manager|activity_monitor]'::
+
+Which role to assign. This argument is required.
+
+include::include/common_options.adoc[]
+
+
+== OUTPUT
+
+Textual output is a simple success message in the absence of errors, containing
+the ID of the created role.
+
+
+== EXAMPLES
+
+Grant 'demo@globus.org' the 'activity_monitor' role on
+'ddb59aef-6d04-11e5-ba46-22000b92c6ec':
+
+----
+$ globus endpoint role create 'ddb59aef-6d04-11e5-ba46-22000b92c6ec' \
+    --identity 'demo@globus.org' --role activity_monitor
+----
+
+include::include/exit_status.adoc[]

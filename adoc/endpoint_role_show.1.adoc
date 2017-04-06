@@ -1,0 +1,49 @@
+= GLLBUS ENDPOINT ROLE SHOW(1)
+
+== NAME
+
+globus endpoint role show - Show full info for a role on an endpoint
+
+
+== SYNOPSIS
+
+*globus endpoint role show* ['OPTIONS'] 'ENDPOINT_ID' 'ROLE_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint role show* command shows information for a specific role
+granted to a user or group on an endpoint. It does not show information about
+the permissions granted by a role; only what role a user or group has been
+granted, by name.
+
+You must have sufficient privileges to see the roles on the endpoint.
+
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== OUTPUT
+
+Textual output has the following fields:
+
+- 'Principal Type'
+- 'Principal'
+- 'Role'
+
+The principal is a user or group ID, and the principal type says which of these
+types the principal is. The term "Principal" is used in the sense of "a
+security principal", an entity which has some privileges associated with it.
+
+
+== EXAMPLES
+
+Show detail for a specific role on an endpoint
+
+----
+$ globus endpoint role show EP_ID ROLE_ID
+----
+
+include::include/exit_status.adoc[]

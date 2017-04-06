@@ -1,0 +1,39 @@
+= GLLBUS ENDPOINT ROLE DELETE(1)
+
+== NAME
+
+globus endpoint role delete - Remove a role from an endpoint
+
+
+== SYNOPSIS
+
+*globus endpoint role delete* ['OPTIONS'] 'ENDPOINT_ID' 'ROLE_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint role delete* command removes a role from an endpoint.
+
+You must have sufficient privileges to modify the roles on the endpoint.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== OUTPUT
+
+Textual output is a simple success message in the absence of errors.
+
+
+== EXAMPLES
+
+Delete role '0f007eec-1aeb-11e7-aec4-3c970e0c9cc4' on endpoint
+'ddb59aef-6d04-11e5-ba46-22000b92c6ec':
+
+----
+$ globus endpoint role delete 'ddb59aef-6d04-11e5-ba46-22000b92c6ec' \
+    '0f007eec-1aeb-11e7-aec4-3c970e0c9cc4'
+----
+
+include::include/exit_status.adoc[]

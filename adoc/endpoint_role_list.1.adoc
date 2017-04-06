@@ -1,0 +1,47 @@
+= GLLBUS ENDPOINT ROLE LIST(1)
+
+== NAME
+
+globus endpoint role list - List all of the assigned roles on an endpoint
+
+
+== SYNOPSIS
+
+*globus endpoint role list* ['OPTIONS'] 'ENDPOINT_ID'
+
+
+== DESCRIPTION
+
+The *globus endpoint role list* command shows each of the roles associated with
+an endpoint.
+
+You must have sufficient privileges to see the roles on the endpoint.
+
+== OPTIONS
+
+include::include/common_options.adoc[]
+
+
+== OUTPUT
+
+Textual output has the following fields:
+
+- 'Principal Type'
+- 'Role ID'
+- 'Principal'
+- 'Role'
+
+The principal is a user or group ID, and the principal type says which of these
+types the principal is. The term "Principal" is used in the sense of "a
+security principal", an entity which has some privileges associated with it.
+
+
+== EXAMPLES
+
+Show all roles on 'ddb59aef-6d04-11e5-ba46-22000b92c6ec':
+
+----
+$ globus endpoint role list 'ddb59aef-6d04-11e5-ba46-22000b92c6ec'
+----
+
+include::include/exit_status.adoc[]
