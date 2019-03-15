@@ -51,12 +51,12 @@ def session_hook(exception):
         id_str = " ".join(identities)
         safeprint(
             "Please run\n\n"
-            "    globus session boost {}\n\n"
+            "    globus session update {}\n\n"
             "to re-authenticate with the required identities".format(id_str)
         )
     else:
         safeprint(
-            'Please use "globus session boost" to re-authenticate '
+            'Please use "globus session update" to re-authenticate '
             "with specific identities".format(id_str)
         )
 
@@ -176,7 +176,7 @@ def custom_except_hook(exc_info):
             reraise(exception_type, exception, traceback)
 
         # catch any session errors to give helpful instructions
-        # on how to use globus session boost
+        # on how to use globus session update
         elif (
             isinstance(exception, exc.GlobusAPIError)
             and exception.raw_json

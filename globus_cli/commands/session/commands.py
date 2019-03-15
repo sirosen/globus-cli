@@ -1,4 +1,4 @@
-from globus_cli.commands.session.boost import session_boost
+from globus_cli.commands.session.update import session_update
 from globus_cli.commands.session.show import session_show
 from globus_cli.parsing import globus_group
 
@@ -9,5 +9,5 @@ def session_command():
 
 
 # commands
-session_command.add_command(session_boost)
+session_command.add_command(session_update)
 session_command.add_command(session_show)

@@ -1,18 +1,18 @@
-= GLOBUS SESSION BOOST(1)
+= GLOBUS SESSION UPDATE(1)
 
 == NAME
 
-globus session boost - Boost the user's CLI auth session
+globus session update - Update the user's CLI auth session
 
 
 == SYNOPSIS
 
-*globus session boost* ['OPTIONS'] ['UUID_OR_USERNAME(s)']
+*globus session update* ['OPTIONS'] ['UUID_OR_USERNAME(s)']
 
 
 == DESCRIPTION
 
-The *globus session boost* command starts an authentication
+The *globus session update* command starts an authentication
 flow with Globus Auth similarly to *globus login* but specifies which
 identities to authenticate with.
 

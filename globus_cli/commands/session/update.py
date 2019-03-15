@@ -13,10 +13,10 @@ from globus_cli.services.auth import get_auth_client
 
 
 @click.command(
-    "boost",
-    short_help=("Boost your CLI auth session"),
+    "update",
+    short_help=("Update your CLI auth session"),
     help=(
-        "Boost your current CLI auth session by authenticating "
+        "Update your current CLI auth session by authenticating "
         "with specific identities."
     ),
 )
@@ -26,7 +26,7 @@ from globus_cli.services.auth import get_auth_client
 @click.option(
     "--all", is_flag=True, help="authenticate with every identity in your identity set"
 )
-def session_boost(identities, no_local_server, all):
+def session_update(identities, no_local_server, all):
 
     if (not (identities or all)) or (identities and all):
         raise click.UsageError("Either give one or more IDENTITIES or use --all")
@@ -73,7 +73,7 @@ def session_boost(identities, no_local_server, all):
     # create session params once we have all identity ids
     session_params = {
         "session_required_identities": ",".join(identity_ids),
-        "session_message": "Authenticate to boost your CLI session.",
+        "session_message": "Authenticate to update your CLI session.",
     }
 
     # use a link login if remote session or user requested
@@ -83,16 +83,16 @@ def session_boost(identities, no_local_server, all):
     # otherwise default to a local server login flow
     else:
         safeprint(
-            "You are running 'globus session boost', "
+            "You are running 'globus session update', "
             "which should automatically open a browser window for you to "
             "authenticate with specific identities.\n"
             "If this fails or you experience difficulty, try "
-            "'globus session boost --no-local-server'"
+            "'globus session update --no-local-server'"
             "\n---"
         )
         do_local_server_auth_flow(session_params=session_params)
 
     safeprint(
-        "\nYou have successfully boosted your CLI session.\n"
+        "\nYou have successfully updated your CLI session.\n"
         "Use 'globus session show' to see the updated session."
     )
