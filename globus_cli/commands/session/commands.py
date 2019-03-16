@@ -1,5 +1,5 @@
-from globus_cli.commands.session.update import session_update
 from globus_cli.commands.session.show import session_show
+from globus_cli.commands.session.update import session_update
 from globus_cli.parsing import globus_group
 
 
