@@ -1,3 +1,4 @@
+from globus_cli.commands.admin import admin_command
 from globus_cli.commands.bookmark import bookmark_command
 from globus_cli.commands.config import config_command
 from globus_cli.commands.delete import delete_command
@@ -45,3 +46,5 @@ main.add_command(endpoint_command)
 main.add_command(bookmark_command)
 main.add_command(task_command)
 main.add_command(session_command)
+
+main.add_command(admin_command)
