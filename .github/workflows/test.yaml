@@ -1,0 +1,37 @@
+name: Test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["2.7", "3.5", "3.6", "3.7", "3.8"]
+        # we do not want a large number of windows and macos builds, so
+        # enumerate them explicitly
+        include:
+          - os: windows-latest
+            python-version: 2.7
+          - os: windows-latest
+            python-version: 3.8
+          - os: macos-latest
+            python-version: 3.8
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Requirements
+        run: python -m pip install -U pip setuptools tox
+      - name: Run Linting
+        # only lint on 3.8 for two reasons
+        #  1. faster overall runs
+        #  2. Linting fails on py3.5 because tools require 3.6+
+        if: ${{ matrix.python-version == '3.8' }}
+        run: python -m tox -e lint
+      - name: Run Tests
+        run: python -m tox -e py
