@@ -23,13 +23,19 @@ def test_defualt_one_username(run_line, load_api_fixtures):
     assert user_id + "\n" == result.output
 
 
-def test_default_invalid(run_line, register_api_route):
+def test_default_nosuchidentity(run_line, register_api_route):
     """
     Runs get-identities with one username, confirms correct id returned
     """
     register_api_route("auth", "/v2/api/identities", json={"identities": []})
-    result = run_line("globus get-identities invalid")
+    result = run_line("globus get-identities invalid@nosuchdomain.exists")
     assert "NO_SUCH_IDENTITY\n" == result.output
+
+
+def test_invalid_username(run_line, register_api_route):
+    # check that 'invalid' is called out as not being a valid username or identity
+    result = run_line("globus get-identities invalid", assert_exit_code=2)
+    assert "'invalid' does not appear to be a valid identity" in result.stderr
 
 
 def test_default_multiple_inputs(run_line, load_api_fixtures):
@@ -42,7 +48,7 @@ def test_default_multiple_inputs(run_line, load_api_fixtures):
     in_vals = [
         users[0]["username"],
         users[0]["user_id"],
-        "invalid",
+        "invalid@nosuchdomain.exists",
         users[1]["username"],
         users[1]["username"],
     ]

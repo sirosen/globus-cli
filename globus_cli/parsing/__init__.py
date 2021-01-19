@@ -4,6 +4,7 @@ from globus_cli.parsing.endpoint_plus_path import (
     ENDPOINT_PLUS_REQPATH,
 )
 from globus_cli.parsing.explicit_null import EXPLICIT_NULL
+from globus_cli.parsing.identity_type import IdentityType
 from globus_cli.parsing.one_use_option import one_use_option
 from globus_cli.parsing.process_stdin import shlex_process_stdin
 from globus_cli.parsing.shared_options import (
@@ -23,13 +24,17 @@ from globus_cli.parsing.shared_options import (
 from globus_cli.parsing.task_path import TaskPath
 
 __all__ = [
+    # replacement decorators
     "command",
     "group",
     "main_group",
+    "one_use_option",
+    # param types
     "ENDPOINT_PLUS_OPTPATH",
     "ENDPOINT_PLUS_REQPATH",
     "TaskPath",
-    "one_use_option",
+    "IdentityType",
+    # other helpers
     "EXPLICIT_NULL",
     # Transfer options
     "endpoint_id_arg",
