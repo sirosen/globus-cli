@@ -25,7 +25,7 @@ def _identity_set(auth_client):
 
 def _update_session_params_all_case(auth_client, session_params):
     """if --all use every identity id in the user's identity set"""
-    identity_ids = _identity_set(auth_client)
+    identity_ids = [x["sub"] for x in _identity_set(auth_client)]
     # set session params once we have all identity ids
     session_params["session_required_identities"] = ",".join(identity_ids)
 
@@ -99,7 +99,7 @@ def session_update(identities, no_local_server, all):
     """
 
     if (not (identities or all)) or (identities and all):
-        raise click.UsageError("Either give one or more IDENTITY values or use --all")
+        raise click.UsageError("IDENTITY values and --all are mutually exclusive")
 
     auth_client = get_auth_client()
     session_params = {"session_message": "Authenticate to update your CLI session."}
