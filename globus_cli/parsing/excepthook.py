@@ -48,12 +48,15 @@ def session_hook(exception):
         click.echo("message: {}".format(message))
 
     identities = params.get("session_required_identities")
-    if identities:
-        id_str = " ".join(identities)
+    domains = params.get("session_required_single_domain")
+
+    if identities or domains:
         click.echo(
-            "Please run\n\n"
-            "    globus session update {}\n\n"
-            "to re-authenticate with the required identities".format(id_str)
+            (
+                "Please run\n\n"
+                "    globus session update {}\n\n"
+                "to re-authenticate with the required identities"
+            ).format(" ".join(identities) if identities else " ".join(domains))
         )
     else:
         click.echo(
