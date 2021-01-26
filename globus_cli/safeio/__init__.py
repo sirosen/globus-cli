@@ -18,6 +18,7 @@ from globus_cli.safeio.output_formatter import (
     FORMAT_TEXT_RAW,
     FORMAT_TEXT_RECORD,
     FORMAT_TEXT_TABLE,
+    FormatField,
     formatted_print,
 )
 from globus_cli.safeio.write import print_command_hint
@@ -27,6 +28,7 @@ __all__ = [
     "PrintableErrorField",
     "write_error_info",
     "formatted_print",
+    "FormatField",
     "FORMAT_SILENT",
     "FORMAT_JSON",
     "FORMAT_TEXT_TABLE",

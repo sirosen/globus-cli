@@ -1,5 +1,5 @@
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.safeio import FORMAT_TEXT_RECORD, formatted_print
+from globus_cli.safeio import FORMAT_TEXT_RECORD, FormatField, formatted_print
 from globus_cli.services.transfer import get_client
 
 
@@ -22,6 +22,7 @@ STANDARD_FIELDS = (
     ("Display Name", "display_name"),
     ("ID", "id"),
     ("Owner", "owner_string"),
+    FormatField("Description", "description", wrap_enabled=True),
     ("Activated", "activated"),
     ("Shareable", "shareable"),
     ("Department", "department"),

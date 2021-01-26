@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import json
+import textwrap
 
 import click
 import six
@@ -17,6 +18,7 @@ from globus_cli.safeio.get_option_vals import (
 # if it's a list, pylint will freak out
 __all__ = (
     "formatted_print",
+    "FormatField",
     "FORMAT_SILENT",
     "FORMAT_JSON",
     "FORMAT_TEXT_TABLE",
@@ -34,6 +36,29 @@ FORMAT_TEXT_TABLE = "text_table"
 FORMAT_TEXT_RECORD = "text_record"
 FORMAT_TEXT_RAW = "text_raw"
 FORMAT_TEXT_CUSTOM = "text_custom"
+
+
+class FormatField(object):
+    def __init__(self, name, key, wrap_enabled=False):
+        self.name = name
+        self.keyfunc = _key_to_keyfunc(key)
+        self.wrap_enabled = wrap_enabled
+
+    @classmethod
+    def coerce(cls, rawfield):
+        if isinstance(rawfield, cls):
+            return rawfield
+        elif isinstance(rawfield, tuple):
+            if len(rawfield) == 2:
+                return cls(rawfield[0], rawfield[1])
+            raise ValueError("cannot coerce tuple of bad length")
+        raise TypeError(
+            "FormatField.coerce must be given a field or tuple, "
+            "got {}".format(type(rawfield))
+        )
+
+    def __call__(self, data):
+        return self.keyfunc(data)
 
 
 def _key_to_keyfunc(k):
@@ -97,43 +122,57 @@ def print_unix_response(res):
         click.get_current_context().exit(2)
 
 
-def colon_formatted_print(data, named_fields):
-    maxlen = max(len(n) for n, f in named_fields) + 1
-    for name, field in named_fields:
-        field_keyfunc = _key_to_keyfunc(field)
-        click.echo("{} {}".format((name + ":").ljust(maxlen), field_keyfunc(data)))
+def colon_formatted_print(data, fields):
+    maxlen = max(len(f.name) for f in fields) + 2
+    indent = " " * maxlen
+    wrapper = textwrap.TextWrapper(initial_indent=indent, subsequent_indent=indent)
+    for field in fields:
+        # str in case the result is `None`
+        value = str(field(data))
+
+        # 88 char wrap based on the same rationale that `black` and `flake8-bugbear`
+        # use 88 chars (or if there's a newline)
+        # only wrap if it's enabled and detected
+        shouldwrap = field.wrap_enabled and len(value) + maxlen > 88 or "\n" in value
+        if shouldwrap:
+            # TextWrapper will discard existing whitespace, including newlines
+            # so split, wrap each resulting line, then rejoin
+            lines = value.split("\n")
+            lines = [wrapper.fill(x) for x in lines]
+            if len(lines) > 5:  # truncate here, max 5 lines
+                lines = lines[:5] + [indent + "..."]
+            # lstrip to remove indent on the first line, since it will be indented by
+            # the format string below
+            value = "\n".join(lines).lstrip()
+
+        click.echo("{}{}".format((field.name + ":").ljust(maxlen), value))
 
 
-def print_table(iterable, headers_and_keys, print_headers=True):
+def print_table(iterable, fields, print_headers=True):
     # the iterable may not be safe to walk multiple times, so we must walk it
     # only once -- however, to let us write things naturally, convert it to a
     # list and we can assume it is safe to walk repeatedly
     iterable = list(iterable)
 
     # extract headers and keys as separate lists
-    headers = [h for (h, k) in headers_and_keys]
-    keys = [k for (h, k) in headers_and_keys]
+    headers = [f.name for f in fields]
 
-    # convert all keys to keyfuncs
-    keyfuncs = [_key_to_keyfunc(key) for key in keys]
-
-    # use the iterable to find the max width of an element for each column, in
-    # the same order as the headers_and_keys array
+    # use the iterable to find the max width of an element for each column
     # use a special function to handle empty iterable
-    def get_max_colwidth(kf):
+    def get_max_colwidth(f):
         def _safelen(x):
             try:
                 return len(x)
             except TypeError:
                 return len(str(x))
 
-        lengths = [_safelen(kf(i)) for i in iterable]
+        lengths = [_safelen(f(i)) for i in iterable]
         if not lengths:
             return 0
         else:
             return max(lengths)
 
-    widths = [get_max_colwidth(kf) for kf in keyfuncs]
+    widths = [get_max_colwidth(f) for f in fields]
     # handle the case in which the column header is the widest thing
     widths = [max(w, len(h)) for w, h in zip(widths, headers)]
 
@@ -151,7 +190,7 @@ def print_table(iterable, headers_and_keys, print_headers=True):
         click.echo(format_str.format(*["-" * w for w in widths]))
     # print the rows of data
     for i in iterable:
-        click.echo(format_str.format(*[none_to_null(kf(i)) for kf in keyfuncs]))
+        click.echo(format_str.format(*[none_to_null(f(i)) for f in fields]))
 
 
 def formatted_print(
@@ -184,9 +223,8 @@ def formatted_print(
     must take ``response_data`` and produce another dict or dict-like object
     (json/unix output only)
 
-    ``fields`` is an iterable of (fieldname, keyfunc) tuples. When keyfunc is
-    a string, it is implicitly converted to `lambda x: x[keyfunc]` (text output
-    only)
+    ``fields`` is an iterable of fields. They may be expressed as FormatField
+    objects, (fieldname, key_string) tuples, or (fieldname, key_func) tuples.
 
     ``response_key`` is a key into the data to print. When used with table
     printing, it must get an iterable out, and when used with raw printing, it
@@ -239,6 +277,10 @@ def formatted_print(
         # if there's an epilog, print it after any text
         if text_epilog is not None:
             click.echo(text_epilog)
+
+    # ensure fields are FormatField instances
+    if fields:
+        fields = [FormatField.coerce(f) for f in fields]
 
     if isinstance(text_format, six.string_types):
         text_format = text_format
