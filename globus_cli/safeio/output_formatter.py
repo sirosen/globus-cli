@@ -39,6 +39,16 @@ FORMAT_TEXT_CUSTOM = "text_custom"
 
 
 class FormatField(object):
+    """A field which will be shown in record or table output.
+    When fields are provided as tuples, they are converted into this.
+
+    :param name: the displayed name for the record field or the column
+        name for table output
+    :param key: a str for indexing into print data or a callable which
+        produces a string given the print data
+    :param wrap_enabled: in record output, is this field allowed to wrap
+    """
+
     def __init__(self, name, key, wrap_enabled=False):
         self.name = name
         self.keyfunc = _key_to_keyfunc(key)
@@ -46,6 +56,7 @@ class FormatField(object):
 
     @classmethod
     def coerce(cls, rawfield):
+        """given a (FormatField|tuple), convert to a FormatField"""
         if isinstance(rawfield, cls):
             return rawfield
         elif isinstance(rawfield, tuple):
@@ -58,6 +69,7 @@ class FormatField(object):
         )
 
     def __call__(self, data):
+        """extract the field's value from the print data"""
         return self.keyfunc(data)
 
 
