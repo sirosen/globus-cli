@@ -53,13 +53,15 @@ class FormatField:
 
     @classmethod
     def coerce(cls, rawfield):
-        """given a (FormatField|tuple), convert to a FormatField"""
+        """given a (FormatField|tuple|str), convert to a FormatField"""
         if isinstance(rawfield, cls):
             return rawfield
         elif isinstance(rawfield, tuple):
             if len(rawfield) == 2:
                 return cls(rawfield[0], rawfield[1])
             raise ValueError("cannot coerce tuple of bad length")
+        elif isinstance(rawfield, str):
+            return cls(rawfield.replace("_", " ").title(), rawfield)
         raise TypeError(
             "FormatField.coerce must be given a field or tuple, "
             "got {}".format(type(rawfield))

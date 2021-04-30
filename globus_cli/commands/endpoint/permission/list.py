@@ -43,8 +43,8 @@ def list_command(endpoint_id):
         rules,
         fields=[
             ("Rule ID", "id"),
-            ("Permissions", "permissions"),
+            "permissions",
             ("Shared With", principal_str),
-            ("Path", "path"),
+            "path",
         ],
     )

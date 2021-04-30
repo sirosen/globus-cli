@@ -96,5 +96,5 @@ def create_command(
     formatted_print(
         res,
         text_format=FORMAT_TEXT_RECORD,
-        fields=[("Message", "message"), ("Rule ID", "access_id")],
+        fields=["message", ("Rule ID", "access_id")],
     )

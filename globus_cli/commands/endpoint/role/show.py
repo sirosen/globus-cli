@@ -46,9 +46,5 @@ def role_show(endpoint_id, role_id):
     formatted_print(
         role,
         text_format=FORMAT_TEXT_RECORD,
-        fields=(
-            ("Principal Type", "principal_type"),
-            ("Principal", lookup_principal),
-            ("Role", "role"),
-        ),
+        fields=("principal_type", ("Principal", lookup_principal), "role"),
     )

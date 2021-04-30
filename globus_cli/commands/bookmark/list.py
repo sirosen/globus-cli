@@ -54,11 +54,11 @@ def bookmark_list():
     formatted_print(
         bookmark_iterator,
         fields=[
-            ("Name", "name"),
+            "name",
             ("Bookmark ID", "id"),
             ("Endpoint ID", "endpoint_id"),
             ("Endpoint Name", get_ep_name),
-            ("Path", "path"),
+            "path",
         ],
         response_key="DATA",
         json_converter=iterable_response_to_dict,

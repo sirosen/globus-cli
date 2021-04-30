@@ -19,26 +19,26 @@ def endpoint_show(endpoint_id):
 
 
 STANDARD_FIELDS = (
-    ("Display Name", "display_name"),
+    "display_name",
     ("ID", "id"),
     ("Owner", "owner_string"),
     FormatField("Description", "description", wrap_enabled=True),
-    ("Activated", "activated"),
-    ("Shareable", "shareable"),
-    ("Department", "department"),
-    ("Keywords", "keywords"),
+    "activated",
+    "shareable",
+    "department",
+    "keywords",
     ("Endpoint Info Link", "info_link"),
     ("Contact E-mail", "contact_email"),
-    ("Organization", "organization"),
-    ("Department", "department"),
+    "organization",
+    "department",
     ("Other Contact Info", "contact_info"),
     ("Visibility", "public"),
-    ("Default Directory", "default_directory"),
-    ("Force Encryption", "force_encryption"),
+    "default_directory",
+    "force_encryption",
     ("Managed Endpoint", lambda res: bool(res["subscription_id"])),
     ("Subscription ID", "subscription_id"),
     ("Legacy Name", "canonical_name"),
-    ("Local User Info Available", "local_user_info_available"),
+    "local_user_info_available",
 )
 
 GCP_FIELDS = STANDARD_FIELDS + (

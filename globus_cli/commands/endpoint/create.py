@@ -10,7 +10,7 @@ from globus_cli.parsing import (
 from globus_cli.safeio import FORMAT_TEXT_RECORD, formatted_print
 from globus_cli.services.transfer import assemble_generic_doc, autoactivate, get_client
 
-COMMON_FIELDS = [("Message", "message"), ("Endpoint ID", "id")]
+COMMON_FIELDS = ["message", ("Endpoint ID", "id")]
 
 GCP_FIELDS = [("Setup Key", "globus_connect_setup_key")]
 

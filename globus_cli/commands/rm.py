@@ -103,7 +103,7 @@ def rm_command(
     delete_data.add_item(path)
 
     if dry_run:
-        formatted_print(delete_data, response_key="DATA", fields=[("Path", "path")])
+        formatted_print(delete_data, response_key="DATA", fields=["path"])
         # exit safely
         return
 

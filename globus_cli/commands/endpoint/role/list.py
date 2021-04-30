@@ -57,9 +57,9 @@ def role_list(endpoint_id):
     formatted_print(
         roles,
         fields=[
-            ("Principal Type", "principal_type"),
+            "principal_type",
             ("Role ID", "id"),
             ("Principal", principal_str),
-            ("Role", "role"),
+            "role",
         ],
     )

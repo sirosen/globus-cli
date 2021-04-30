@@ -138,9 +138,9 @@ def get_identities_command(values, provision):
         response_key="identities",
         fields=[
             ("ID", "id"),
-            ("Username", "username"),
+            "username",
             ("Full Name", "name"),
-            ("Organization", "organization"),
+            "organization",
             ("Email Address", "email"),
         ],
         # verbose output is a table. Order not guaranteed, may contain

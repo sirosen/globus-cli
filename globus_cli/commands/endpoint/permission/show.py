@@ -40,8 +40,8 @@ def show_command(endpoint_id, rule_id):
         text_format=FORMAT_TEXT_RECORD,
         fields=(
             ("Rule ID", "id"),
-            ("Permissions", "permissions"),
+            "permissions",
             ("Shared With", _shared_with_keyfunc),
-            ("Path", "path"),
+            "path",
         ),
     )

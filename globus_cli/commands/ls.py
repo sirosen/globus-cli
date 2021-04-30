@@ -191,15 +191,8 @@ def ls_command(
     # and then print it, per formatting rules
     formatted_print(
         res,
-        fields=[
-            ("Permissions", "permissions"),
-            ("User", "user"),
-            ("Group", "group"),
-            ("Size", "size"),
-            ("Last Modified", "last_modified"),
-            ("File Type", "type"),
-            ("Filename", cleaned_item_name),
-        ],
+        fields=["permissions", "user", "group", "size", "last_modified"]
+        + [("File Type", "type"), ("Filename", cleaned_item_name)],
         simple_text=(
             None
             if long_output or is_verbose() or not outformat_is_text()

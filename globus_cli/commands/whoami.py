@@ -103,11 +103,6 @@ def whoami_command(linked_identities):
         formatted_print(
             res,
             text_format=FORMAT_TEXT_RECORD,
-            fields=[
-                ("Username", "preferred_username"),
-                ("Name", "name"),
-                ("ID", "sub"),
-                ("Email", "email"),
-            ],
+            fields=[("Username", "preferred_username"), "name", ("ID", "sub"), "email"],
             simple_text=(None if is_verbose() else res["preferred_username"]),
         )

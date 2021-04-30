@@ -403,10 +403,10 @@ def transfer_command(
             transfer_data,
             response_key="DATA",
             fields=(
-                ("Source Path", "source_path"),
+                "source_path",
                 ("Dest Path", "destination_path"),
-                ("Recursive", "recursive"),
-                ("External Checksum", "external_checksum"),
+                "recursive",
+                "external_checksum",
             ),
         )
         # exit safely
@@ -422,5 +422,5 @@ def transfer_command(
     formatted_print(
         res,
         text_format=FORMAT_TEXT_RECORD,
-        fields=(("Message", "message"), ("Task ID", "task_id")),
+        fields=("message", ("Task ID", "task_id")),
     )

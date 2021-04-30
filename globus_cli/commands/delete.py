@@ -180,5 +180,5 @@ def delete_command(
     formatted_print(
         res,
         text_format=FORMAT_TEXT_RECORD,
-        fields=(("Message", "message"), ("Task ID", "task_id")),
+        fields=("message", ("Task ID", "task_id")),
     )
