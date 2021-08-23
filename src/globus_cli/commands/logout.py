@@ -2,13 +2,13 @@ import click
 import globus_sdk
 from globus_sdk import AuthAPIError
 
-from globus_cli.parsing import command
-from globus_cli.services.auth import get_auth_client
-from globus_cli.tokenstore import (
+from globus_cli.login_manager import (
     delete_templated_client,
     internal_native_client,
     token_storage_adapter,
 )
+from globus_cli.parsing import command
+from globus_cli.services.auth import get_auth_client
 
 
 def warnecho(msg):

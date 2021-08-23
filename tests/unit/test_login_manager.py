@@ -22,7 +22,7 @@ def mock_get_tokens(resource_server):
     return fake_tokens.get(resource_server)
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_success(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
@@ -34,7 +34,7 @@ def test_requires_login_success(mock_get_adapter):
     assert dummy_command()
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_multi_server_success(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
@@ -45,7 +45,7 @@ def test_requires_login_multi_server_success(mock_get_adapter):
     assert dummy_command()
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_single_server_fail(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
@@ -61,7 +61,7 @@ def test_requires_login_single_server_fail(mock_get_adapter):
     )
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_fail_two_servers(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
@@ -81,7 +81,7 @@ def test_requires_login_fail_two_servers(mock_get_adapter):
         assert server in str(ex.value)
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_fail_multi_server(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
@@ -101,7 +101,7 @@ def test_requires_login_fail_multi_server(mock_get_adapter):
         assert server in str(ex.value)
 
 
-@patch("globus_cli.tokenstore.token_storage_adapter")
+@patch("globus_cli.login_manager.tokenstore.token_storage_adapter")
 def test_requires_login_pass_manager(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 

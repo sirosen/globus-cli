@@ -1,29 +1,9 @@
-import logging.config
 import os
 from configparser import ConfigParser
 
 import globus_sdk
 
 GLOBUS_ENV = os.environ.get("GLOBUS_SDK_ENVIRONMENT")
-
-
-def setup_logging(level="DEBUG"):
-    conf = {
-        "version": 1,
-        "formatters": {
-            "basic": {"format": "[%(levelname)s] %(name)s::%(funcName)s() %(message)s"}
-        },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "level": level,
-                "formatter": "basic",
-            }
-        },
-        "loggers": {"globus_sdk": {"level": level, "handlers": ["console"]}},
-    }
-
-    logging.config.dictConfig(conf)
 
 
 def _get_old_conf_path():

@@ -1,6 +1,6 @@
 import click
 
-from globus_cli.helpers import (
+from globus_cli.login_manager import (
     do_link_auth_flow,
     do_local_server_auth_flow,
     is_remote_session,

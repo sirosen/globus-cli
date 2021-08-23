@@ -14,7 +14,7 @@ from globus_sdk.transport import RequestsTransport
 from globus_sdk.utils import slash_join
 from ruamel.yaml import YAML
 
-import globus_cli.config
+import globus_cli
 
 yaml = YAML()
 log = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ def test_token_storage(mock_login_token_response):
 @pytest.fixture(autouse=True)
 def patch_tokenstorage(monkeypatch, test_token_storage):
     monkeypatch.setattr(
-        globus_cli.tokenstore.token_storage_adapter,
+        globus_cli.login_manager.token_storage_adapter,
         "_instance",
         test_token_storage,
         raising=False,
@@ -96,10 +96,6 @@ def cli_runner():
 def run_line(cli_runner, request, patch_tokenstorage):
     """
     Uses the CliRunner to run the given command line.
-
-    Any calls to get_config_obj during the test are patched to
-    return a ConfigObj with given config dict. If no config dict is given,
-    defaults to default_test_config_obj defined above.
 
     Asserts that the exit_code is equal to the given assert_exit_code,
     and if that exit_code is 0 prevents click from catching exceptions

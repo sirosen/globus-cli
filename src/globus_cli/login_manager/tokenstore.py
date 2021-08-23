@@ -4,7 +4,7 @@ import sys
 import globus_sdk
 from globus_sdk.tokenstorage import SQLiteAdapter
 
-from .config import invalidate_old_config
+from ._old_config import invalidate_old_config
 
 # internal constants
 _CLIENT_DATA_CONFIG_KEY = "auth_client_data"

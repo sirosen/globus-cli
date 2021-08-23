@@ -3,7 +3,7 @@ import uuid
 from globus_sdk import AuthClient, RefreshTokenAuthorizer
 
 from globus_cli import version
-from globus_cli.tokenstore import internal_auth_client, token_storage_adapter
+from globus_cli.login_manager import internal_auth_client, token_storage_adapter
 
 # what qualifies as a valid Identity Name?
 _IDENTITY_NAME_REGEX = r"^[a-zA-Z0-9]+.*@[a-zA-z0-9-]+\..*[a-zA-Z]+$"

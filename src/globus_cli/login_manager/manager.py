@@ -2,8 +2,9 @@ import functools
 
 import click
 
+from globus_cli.utils import format_list_of_words, format_plural_str
+
 from .tokenstore import token_storage_adapter
-from .utils import format_list_of_words, format_plural_str
 
 
 class LoginManager:

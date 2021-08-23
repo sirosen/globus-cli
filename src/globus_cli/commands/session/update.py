@@ -1,11 +1,11 @@
 import click
 
-from globus_cli.helpers import (
+from globus_cli.login_manager import (
     do_link_auth_flow,
     do_local_server_auth_flow,
     is_remote_session,
+    requires_login,
 )
-from globus_cli.login_manager import requires_login
 from globus_cli.parsing import IdentityType, command, no_local_server_option
 from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
 

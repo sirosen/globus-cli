@@ -1,15 +1,33 @@
+import logging.config
 import warnings
 
 import click
 import jmespath
-
-from globus_cli import config
 
 # Format Enum for output formatting
 # could use a namedtuple, but that's overkill
 JSON_FORMAT = "json"
 TEXT_FORMAT = "text"
 UNIX_FORMAT = "unix"
+
+
+def _setup_logging(level="DEBUG"):
+    conf = {
+        "version": 1,
+        "formatters": {
+            "basic": {"format": "[%(levelname)s] %(name)s::%(funcName)s() %(message)s"}
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "level": level,
+                "formatter": "basic",
+            }
+        },
+        "loggers": {"globus_sdk": {"level": level, "handlers": ["console"]}},
+    }
+
+    logging.config.dictConfig(conf)
 
 
 class CommandState:
@@ -95,7 +113,7 @@ def debug_option(f):
         warnings.simplefilter("default")
         state = ctx.ensure_object(CommandState)
         state.debug = True
-        config.setup_logging(level="DEBUG")
+        _setup_logging(level="DEBUG")
 
     return click.option(
         "--debug",
@@ -124,14 +142,14 @@ def verbose_option(f):
         # logging set to error
         if value == 1:
             warnings.simplefilter("once")
-            config.setup_logging(level="ERROR")
+            _setup_logging(level="ERROR")
 
         # verbosity level 2
         # warnings set to default
         # logging set to info
         if value == 2:
             warnings.simplefilter("default")
-            config.setup_logging(level="INFO")
+            _setup_logging(level="INFO")
 
         # verbosity level 3+
         # warnings set to always
@@ -140,7 +158,7 @@ def verbose_option(f):
         if value >= 3:
             warnings.simplefilter("always")
             state.debug = True
-            config.setup_logging(level="DEBUG")
+            _setup_logging(level="DEBUG")
 
     return click.option(
         "--verbose",

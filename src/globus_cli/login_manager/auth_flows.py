@@ -2,8 +2,8 @@ import webbrowser
 
 import click
 
-from globus_cli.helpers.local_server import LocalServerError, start_local_server
-from globus_cli.tokenstore import internal_auth_client, token_storage_adapter
+from .local_server import LocalServerError, start_local_server
+from .tokenstore import internal_auth_client, token_storage_adapter
 
 SCOPES = (
     "openid profile email "

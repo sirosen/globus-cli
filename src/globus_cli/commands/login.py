@@ -1,13 +1,14 @@
 import click
 from globus_sdk import AuthAPIError
 
-from globus_cli.helpers import (
+from globus_cli.login_manager import (
     do_link_auth_flow,
     do_local_server_auth_flow,
+    internal_auth_client,
     is_remote_session,
+    token_storage_adapter,
 )
 from globus_cli.parsing import command, no_local_server_option
-from globus_cli.tokenstore import internal_auth_client, token_storage_adapter
 
 _SHARED_EPILOG = """\
 
