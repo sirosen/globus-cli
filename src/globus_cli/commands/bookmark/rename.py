@@ -1,10 +1,11 @@
 import click
 
-from globus_cli.commands.bookmark.helpers import resolve_id_or_name
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command
 from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
 from globus_cli.termio import formatted_print
+
+from ._common import resolve_id_or_name
 
 
 @command(

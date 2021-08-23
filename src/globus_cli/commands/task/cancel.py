@@ -1,9 +1,11 @@
 import click
 
 from globus_cli.login_manager import requires_login
-from globus_cli.parsing import command, task_id_arg
+from globus_cli.parsing import command
 from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
+
+from ._common import task_id_arg
 
 
 @command(

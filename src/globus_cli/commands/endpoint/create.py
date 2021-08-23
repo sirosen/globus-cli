@@ -1,13 +1,7 @@
 import click
 
 from globus_cli.login_manager import requires_login
-from globus_cli.parsing import (
-    ENDPOINT_PLUS_REQPATH,
-    command,
-    endpoint_create_and_update_params,
-    one_use_option,
-    validate_endpoint_create_and_update_params,
-)
+from globus_cli.parsing import ENDPOINT_PLUS_REQPATH, command, one_use_option
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     assemble_generic_doc,
@@ -15,6 +9,11 @@ from globus_cli.services.transfer import (
     get_client,
 )
 from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
+
+from ._common import (
+    endpoint_create_and_update_params,
+    validate_endpoint_create_and_update_params,
+)
 
 COMMON_FIELDS = [("Message", "message"), ("Endpoint ID", "id")]
 

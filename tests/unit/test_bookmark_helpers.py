@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 from globus_sdk import TransferAPIError
 
-from globus_cli.commands.bookmark.helpers import resolve_id_or_name
+from globus_cli.commands.bookmark._common import resolve_id_or_name
 
 
 def test_resolve_bookmarkid_not_found_does_name_match():
@@ -50,7 +50,7 @@ def test_resolve_bookmark_no_match_in_list():
     client = mock.MagicMock()
     client.bookmark_list.return_value = [{"name": "bar"}]
 
-    with mock.patch("globus_cli.commands.bookmark.helpers.click") as m:
+    with mock.patch("globus_cli.commands.bookmark._common.click") as m:
         fakectx = mock.Mock()
         fakectx.exit = mock.Mock()
         m.echo = mock.Mock()

@@ -1,16 +1,16 @@
 from globus_cli.login_manager import requires_login
-from globus_cli.parsing import (
-    command,
-    endpoint_create_and_update_params,
-    endpoint_id_arg,
-    validate_endpoint_create_and_update_params,
-)
+from globus_cli.parsing import command, endpoint_id_arg
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     assemble_generic_doc,
     get_client,
 )
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
+
+from ._common import (
+    endpoint_create_and_update_params,
+    validate_endpoint_create_and_update_params,
+)
 
 
 @command("update")

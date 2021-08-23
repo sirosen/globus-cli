@@ -1,6 +1,8 @@
 from globus_cli.login_manager import requires_login
-from globus_cli.parsing import command, synchronous_task_wait_options, task_id_arg
+from globus_cli.parsing import command, synchronous_task_wait_options
 from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+
+from ._common import task_id_arg
 
 
 @command(

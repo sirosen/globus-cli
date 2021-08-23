@@ -1,8 +1,10 @@
 from globus_cli.login_manager import requires_login
-from globus_cli.parsing import command, endpoint_id_arg, role_id_arg
+from globus_cli.parsing import command, endpoint_id_arg
 from globus_cli.services.auth import AUTH_RESOURCE_SERVER, lookup_identity_name
 from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
 from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
+
+from ._common import role_id_arg
 
 
 def lookup_principal(role):
