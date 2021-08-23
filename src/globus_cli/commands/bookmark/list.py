@@ -2,13 +2,13 @@ from globus_sdk import TransferAPIError
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command
-from globus_cli.safeio import formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     display_name_or_cname,
     get_client,
     iterable_response_to_dict,
 )
+from globus_cli.termio import formatted_print
 
 
 @command(

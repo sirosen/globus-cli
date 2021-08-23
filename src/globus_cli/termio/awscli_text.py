@@ -14,17 +14,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# START Globus changes
-
 import errno
-import json
 import sys
-
-# END Globus changes
-
-
-def format_text(data, stream):
-    _format_text(data, stream)
 
 
 def _format_text(item, stream, identifier=None, scalar_keys=None):
@@ -125,9 +116,8 @@ def _partition_dict(item_dict, scalar_keys):
     return scalar, non_scalar
 
 
-# START Globus changes
-def unix_formatted_print(data):
-    format_text(data, sys.stdout)
+def unix_formatted_print(data, stream=sys.stdout):
+    _format_text(data, stream)
     try:
         sys.stdout.flush()
     except OSError as err:
@@ -135,8 +125,3 @@ def unix_formatted_print(data):
             pass
         else:
             raise
-
-
-if __name__ == "__main__":
-    unix_formatted_print(json.load(sys.stdin))
-# END Globus changes

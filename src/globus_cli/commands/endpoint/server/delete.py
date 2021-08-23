@@ -4,12 +4,12 @@ import click
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.safeio import FORMAT_TEXT_RAW, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     get_client,
     get_endpoint_w_server_list,
 )
+from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
 def _spec_to_matches(server_list, server_spec, mode):

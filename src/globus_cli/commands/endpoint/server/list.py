@@ -1,10 +1,10 @@
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.safeio import FORMAT_TEXT_RECORD, FORMAT_TEXT_TABLE, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     get_endpoint_w_server_list,
 )
+from globus_cli.termio import FORMAT_TEXT_RECORD, FORMAT_TEXT_TABLE, formatted_print
 
 
 @command(

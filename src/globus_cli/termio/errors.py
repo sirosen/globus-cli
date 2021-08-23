@@ -2,7 +2,7 @@ import json
 
 import click
 
-from globus_cli.safeio.get_option_vals import outformat_is_json
+from .context import outformat_is_json
 
 
 class PrintableErrorField:

@@ -1,3 +1,6 @@
+import os
+import sys
+
 import click
 
 from globus_cli.parsing.command_state import CommandState
@@ -55,3 +58,15 @@ def is_verbose():
     ctx = click.get_current_context()
     state = ctx.ensure_object(CommandState)
     return state.is_verbose()
+
+
+def out_is_terminal():
+    return sys.stdout.isatty()
+
+
+def err_is_terminal():
+    return sys.stderr.isatty()
+
+
+def term_is_interactive():
+    return os.getenv("PS1") is not None

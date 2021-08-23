@@ -5,7 +5,7 @@ import sys
 import click
 
 from globus_cli.parsing import command
-from globus_cli.safeio import is_verbose, verbosity
+from globus_cli.termio import is_verbose, verbosity
 from globus_cli.version import get_versions
 
 

@@ -8,8 +8,8 @@ from globus_sdk import RefreshTokenAuthorizer, TransferClient
 
 from globus_cli import version
 from globus_cli.parsing import EXPLICIT_NULL
-from globus_cli.safeio import FORMAT_SILENT, formatted_print
 from globus_cli.services.recursive_ls import RecursiveLsResponse
+from globus_cli.termio import FORMAT_SILENT, formatted_print
 from globus_cli.tokenstore import internal_auth_client, token_storage_adapter
 
 log = logging.getLogger(__name__)

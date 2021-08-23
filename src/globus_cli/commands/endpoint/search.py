@@ -3,7 +3,6 @@ import click
 from globus_cli.login_manager import requires_login
 from globus_cli.paging_wrapper import PagingWrapper
 from globus_cli.parsing import command
-from globus_cli.safeio import formatted_print
 from globus_cli.services.auth import AUTH_RESOURCE_SERVER, maybe_lookup_identity_id
 from globus_cli.services.transfer import (
     ENDPOINT_LIST_FIELDS,
@@ -11,6 +10,7 @@ from globus_cli.services.transfer import (
     get_client,
     iterable_response_to_dict,
 )
+from globus_cli.termio import formatted_print
 
 
 @command(

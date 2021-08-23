@@ -3,13 +3,13 @@ from globus_sdk import AuthAPIError
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command
-from globus_cli.safeio import (
+from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
+from globus_cli.termio import (
     FORMAT_TEXT_RECORD,
     formatted_print,
     is_verbose,
     print_command_hint,
 )
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
 
 
 @command(

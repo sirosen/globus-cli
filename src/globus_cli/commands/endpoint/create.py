@@ -8,13 +8,13 @@ from globus_cli.parsing import (
     one_use_option,
     validate_endpoint_create_and_update_params,
 )
-from globus_cli.safeio import FORMAT_TEXT_RECORD, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     assemble_generic_doc,
     autoactivate,
     get_client,
 )
+from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
 
 COMMON_FIELDS = [("Message", "message"), ("Endpoint ID", "id")]
 

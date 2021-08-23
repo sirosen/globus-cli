@@ -2,9 +2,9 @@ import click
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import IdentityType, command
-from globus_cli.safeio import FORMAT_TEXT_TABLE, formatted_print, is_verbose
 from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
 from globus_cli.stub_response import CLIStubResponse
+from globus_cli.termio import FORMAT_TEXT_TABLE, formatted_print, is_verbose
 
 
 @command(

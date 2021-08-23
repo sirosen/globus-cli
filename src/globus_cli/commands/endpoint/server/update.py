@@ -5,12 +5,12 @@ from globus_cli.parsing import (
     server_add_and_update_opts,
     server_id_arg,
 )
-from globus_cli.safeio import FORMAT_TEXT_RAW, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     assemble_generic_doc,
     get_client,
 )
+from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
 @command(

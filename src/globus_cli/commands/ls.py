@@ -2,13 +2,13 @@ import click
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import ENDPOINT_PLUS_OPTPATH, command
-from globus_cli.safeio import formatted_print, is_verbose, outformat_is_text
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
     iterable_response_to_dict,
 )
+from globus_cli.termio import formatted_print, is_verbose, outformat_is_text
 
 
 @command(

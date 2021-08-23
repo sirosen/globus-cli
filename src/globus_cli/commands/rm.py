@@ -9,13 +9,13 @@ from globus_cli.parsing import (
     synchronous_task_wait_options,
     task_submission_options,
 )
-from globus_cli.safeio import err_is_terminal, formatted_print, term_is_interactive
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
     task_wait_with_io,
 )
+from globus_cli.termio import err_is_terminal, formatted_print, term_is_interactive
 
 
 @command(

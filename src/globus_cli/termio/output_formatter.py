@@ -4,29 +4,10 @@ import textwrap
 import click
 from globus_sdk import GlobusHTTPResponse
 
-from globus_cli.safeio.awscli_text import unix_formatted_print
-from globus_cli.safeio.get_option_vals import (
-    get_jmespath_expression,
-    outformat_is_json,
-    outformat_is_unix,
-)
 from globus_cli.stub_response import CLIStubResponse
 
-# make sure this is a tuple
-# if it's a list, pylint will freak out
-__all__ = (
-    "formatted_print",
-    "FormatField",
-    "FORMAT_SILENT",
-    "FORMAT_JSON",
-    "FORMAT_TEXT_TABLE",
-    "FORMAT_TEXT_RECORD",
-    "FORMAT_TEXT_RAW"
-    # NOTE: we don't export FORMAT_TEXT_CUSTOM as actually passing it is
-    # incorrect usage -- it's used internally, but similarly to the other
-    # format constants
-)
-
+from .awscli_text import unix_formatted_print
+from .context import get_jmespath_expression, outformat_is_json, outformat_is_unix
 
 FORMAT_SILENT = "silent"
 FORMAT_JSON = "json"

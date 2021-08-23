@@ -15,7 +15,7 @@ import click.exceptions
 import globus_sdk
 
 from globus_cli.parsing.command_state import CommandState
-from globus_cli.safeio import PrintableErrorField, write_error_info
+from globus_cli.termio import PrintableErrorField, write_error_info
 
 _REGISTERED_HOOKS = []
 

@@ -2,12 +2,12 @@ import click
 
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import ENDPOINT_PLUS_REQPATH, command
-from globus_cli.safeio import FORMAT_TEXT_RAW, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
 )
+from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
 @command(

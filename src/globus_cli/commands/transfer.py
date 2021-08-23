@@ -10,12 +10,12 @@ from globus_cli.parsing import (
     shlex_process_stdin,
     task_submission_options,
 )
-from globus_cli.safeio import FORMAT_TEXT_RECORD, formatted_print
 from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
 )
+from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
 
 
 @command(
