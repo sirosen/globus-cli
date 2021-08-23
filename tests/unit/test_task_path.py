@@ -1,6 +1,6 @@
 import click
 
-from globus_cli.parsing.task_path import TaskPath
+from globus_cli.parsing import TaskPath
 
 
 def test_task_path_normpath_updir(run_command):

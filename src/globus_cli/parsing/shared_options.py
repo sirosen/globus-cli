@@ -10,8 +10,9 @@ from globus_cli.parsing.command_state import (
     verbose_option,
 )
 from globus_cli.parsing.explicit_null import EXPLICIT_NULL
-from globus_cli.parsing.location import LocationType
 from globus_cli.parsing.mutex_group import MutexInfo, mutex_option_group
+
+from .param_types import LocationType
 
 
 def _optargs_decorator(decorator: Callable) -> Callable:

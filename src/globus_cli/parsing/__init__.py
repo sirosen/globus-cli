@@ -1,10 +1,5 @@
-from globus_cli.parsing.command_decorators import command, group, main_group
-from globus_cli.parsing.endpoint_plus_path import (
-    ENDPOINT_PLUS_OPTPATH,
-    ENDPOINT_PLUS_REQPATH,
-)
+from globus_cli.parsing.commands import command, group, main_group
 from globus_cli.parsing.explicit_null import EXPLICIT_NULL
-from globus_cli.parsing.identity_type import IdentityType
 from globus_cli.parsing.mutex_group import mutex_option_group
 from globus_cli.parsing.one_use_option import one_use_option
 from globus_cli.parsing.process_stdin import shlex_process_stdin
@@ -22,7 +17,13 @@ from globus_cli.parsing.shared_options import (
     task_submission_options,
     validate_endpoint_create_and_update_params,
 )
-from globus_cli.parsing.task_path import TaskPath
+
+from .param_types import (
+    ENDPOINT_PLUS_OPTPATH,
+    ENDPOINT_PLUS_REQPATH,
+    IdentityType,
+    TaskPath,
+)
 
 __all__ = [
     # replacement decorators
