@@ -1,9 +1,6 @@
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    get_endpoint_w_server_list,
-)
+from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
 from globus_cli.termio import FORMAT_TEXT_RECORD, FORMAT_TEXT_TABLE, formatted_print
 
 
@@ -21,8 +18,9 @@ $ globus endpoint server list $ep_id
 @requires_login(TRANSFER_RESOURCE_SERVER)
 def server_list(endpoint_id):
     """List all servers belonging to an endpoint."""
+    client = get_client()
     # raises usage error on shares for us
-    endpoint, server_list = get_endpoint_w_server_list(endpoint_id)
+    endpoint, server_list = client.get_endpoint_w_server_list(endpoint_id)
 
     if server_list == "S3":  # not GCS -- this is an S3 endpoint
         server_list = {"s3_url": endpoint["s3_url"]}

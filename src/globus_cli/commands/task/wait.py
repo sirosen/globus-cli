@@ -1,6 +1,6 @@
 from globus_cli.login_manager import requires_login
 from globus_cli.parsing import command, synchronous_task_wait_options, task_id_arg
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, task_wait_with_io
+from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
 
 
 @command(
@@ -43,6 +43,7 @@ def task_wait(meow, heartbeat, polling_interval, timeout, task_id, timeout_exit_
     If the task succeeds by then, it exits with status 0. Otherwise, it exits with
     status 1.
     """
-    task_wait_with_io(
+    client = get_client()
+    client.task_wait_with_io(
         meow, heartbeat, polling_interval, timeout, task_id, timeout_exit_code
     )

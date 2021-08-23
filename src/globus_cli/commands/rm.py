@@ -13,7 +13,6 @@ from globus_cli.services.transfer import (
     TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
-    task_wait_with_io,
 )
 from globus_cli.termio import err_is_terminal, formatted_print, term_is_interactive
 
@@ -123,12 +122,11 @@ def rm_command(
     click.echo(f'Delete task submitted under ID "{task_id}"', err=True)
 
     # do a `task wait` equivalent, including printing and correct exit status
-    task_wait_with_io(
+    client.task_wait_with_io(
         meow,
         heartbeat,
         polling_interval,
         timeout,
         task_id,
         timeout_exit_code,
-        client=client,
     )

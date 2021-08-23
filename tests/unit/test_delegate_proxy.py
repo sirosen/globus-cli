@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from globus_cli.helpers import fill_delegate_proxy_activation_requirements
+from globus_cli.services.transfer import fill_delegate_proxy_activation_requirements
 
 
 @pytest.fixture
