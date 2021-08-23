@@ -4,7 +4,7 @@ import textwrap
 import click
 from globus_sdk import GlobusHTTPResponse
 
-from globus_cli.stub_response import CLIStubResponse
+from globus_cli.utils import CLIStubResponse
 
 from .awscli_text import unix_formatted_print
 from .context import get_jmespath_expression, outformat_is_json, outformat_is_unix
