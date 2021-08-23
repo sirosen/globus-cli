@@ -1,4 +1,5 @@
 import functools
+from typing import Callable, List, Optional
 
 import click
 
@@ -8,13 +9,23 @@ from globus_cli.parsing.command_state import (
     map_http_status_option,
     verbose_option,
 )
-from globus_cli.parsing.detect_and_decorate import detect_and_decorate
 from globus_cli.parsing.explicit_null import EXPLICIT_NULL
 from globus_cli.parsing.location import LocationType
 from globus_cli.parsing.mutex_group import MutexInfo, mutex_option_group
 
 
-def common_options(*args, **kwargs):
+def _optargs_decorator(decorator: Callable) -> Callable:
+    @functools.wraps(decorator)
+    def wrapper(f: Optional[Callable] = None, **kwargs):
+        if f is None:
+            return functools.partial(decorator, **kwargs)
+        return decorator(f, **kwargs)
+
+    return wrapper
+
+
+@_optargs_decorator
+def common_options(f: Callable, disable_options: Optional[List[str]] = None):
     """
     This is a multi-purpose decorator for applying a "base" set of options
     shared by all commands.
@@ -34,32 +45,26 @@ def common_options(*args, **kwargs):
 
     to disable use of `--format`
     """
+    if disable_options is None:
+        disable_options = []
 
-    disable_opts = kwargs.get("disable_options", [])
+    f = debug_option(f)
+    f = verbose_option(f)
+    f = click.help_option("-h", "--help")(f)
 
-    def decorate(f, **kwargs):
-        """
-        Work of actually decorating a function -- wrapped in here because we
-        want to dispatch depending on how `common_options` is invoked
-        """
-        f = debug_option(f)
-        f = verbose_option(f)
-        f = click.help_option("-h", "--help")(f)
+    # if the format option is being allowed, it needs to be applied to `f`
+    if "format" not in disable_options:
+        f = format_option(f)
 
-        # if the format option is being allowed, it needs to be applied to `f`
-        if "format" not in disable_opts:
-            f = format_option(f)
+    # if the --map-http-status option is being allowed, ...
+    if "map_http_status" not in disable_options:
+        f = map_http_status_option(f)
 
-        # if the --map-http-status option is being allowed, ...
-        if "map_http_status" not in disable_opts:
-            f = map_http_status_option(f)
-
-        return f
-
-    return detect_and_decorate(decorate, args, kwargs)
+    return f
 
 
-def endpoint_id_arg(*args, **kwargs):
+@_optargs_decorator
+def endpoint_id_arg(f: Callable, *, metavar: str = "ENDPOINT_ID"):
     """
     This is the `ENDPOINT_ID` argument consumed by many Transfer endpoint
     related operations. It accepts alternate metavars for cases when another
@@ -78,20 +83,11 @@ def endpoint_id_arg(*args, **kwargs):
     >>> def command_func(endpoint_id):
     >>>     ...
     """
-
-    def decorate(f, **kwargs):
-        """
-        Work of actually decorating a function -- wrapped in here because we
-        want to dispatch depending on how this is invoked
-        """
-        metavar = kwargs.get("metavar", "ENDPOINT_ID")
-        f = click.argument("endpoint_id", metavar=metavar, type=click.UUID)(f)
-        return f
-
-    return detect_and_decorate(decorate, args, kwargs)
+    return click.argument("endpoint_id", metavar=metavar, type=click.UUID)(f)
 
 
-def endpoint_create_and_update_params(*args, **kwargs):
+@_optargs_decorator
+def endpoint_create_and_update_params(f: Callable, *, create=False):
     """
     Collection of options consumed by Transfer endpoint create and update
     operations -- accepts toggle regarding create vs. update that makes
@@ -109,202 +105,165 @@ def endpoint_create_and_update_params(*args, **kwargs):
     >>>                  max_parallelism, preferred_parallelism):
     >>>     ...
     """
+    update_help_prefix = (not create and "New ") or ""
 
-    def inner_decorator(f, create=False):
-        update_help_prefix = (not create and "New ") or ""
-
-        # display name is required for create, not update
-        if create:
-            f = click.argument("display_name")(f)
-        else:
-            f = click.option(
-                "--display-name", help=(update_help_prefix + "Name for the endpoint")
-            )(f)
-
-        # Options available to any endpoint
+    # display name is required for create, not update
+    if create:
+        f = click.argument("display_name")(f)
+    else:
         f = click.option(
-            "--description", help=(update_help_prefix + "Description for the endpoint")
-        )(f)
-        f = click.option(
-            "--info-link",
-            help=(update_help_prefix + "Link for Info about the endpoint"),
-        )(f)
-        f = click.option(
-            "--contact-info",
-            help=(update_help_prefix + "Contact Info for the endpoint"),
-        )(f)
-        f = click.option(
-            "--contact-email",
-            help=(update_help_prefix + "Contact Email for the endpoint"),
-        )(f)
-        f = click.option(
-            "--organization",
-            help=(update_help_prefix + "Organization for the endpoint"),
-        )(f)
-        f = click.option(
-            "--department",
-            help=(update_help_prefix + "Department which operates the endpoint"),
-        )(f)
-        f = click.option(
-            "--keywords",
-            help=(
-                update_help_prefix
-                + "Comma separated list of keywords to help searches "
-                "for the endpoint"
-            ),
-        )(f)
-        f = click.option("--default-directory", help=("Set the default directory"))(f)
-        f = click.option(
-            "--no-default-directory",
-            is_flag=True,
-            flag_value=True,
-            default=None,
-            help=("Unset any default directory on the endpoint"),
-        )(f)
-        f = mutex_option_group("--default-directory", "--no-default-directory")(f)
-
-        f = click.option(
-            "--force-encryption/--no-force-encryption",
-            default=None,
-            help=("(Un)Force the endpoint to encrypt transfers"),
-        )(f)
-        f = click.option(
-            "--disable-verify/--no-disable-verify",
-            default=None,
-            is_flag=True,
-            help="(Un)Set the endpoint to ignore checksum verification",
+            "--display-name", help=f"{update_help_prefix}Name for the endpoint"
         )(f)
 
-        # GCS only options
-        f = click.option(
-            "--public/--private",
-            "public",
-            default=None,
-            help=(
-                "Set the endpoint to be public or private "
-                "(Globus Connect Server only)"
-            ),
-        )(f)
-        f = click.option(
-            "--myproxy-dn",
-            help=("Set the MyProxy Server DN (Globus Connect Server only)"),
-        )(f)
-        f = click.option(
-            "--myproxy-server",
-            help="Set the MyProxy Server URI (Globus Connect Server only)",
-        )(f)
-        f = click.option(
-            "--oauth-server",
-            help=("Set the OAuth Server URI (Globus Connect Server only)"),
-        )(f)
-        f = click.option(
-            "--location",
-            type=LocationType(),
-            default=None,
-            help="Manually set the endpoint's latitude and longitude "
-            "(Globus Connect Server only)",
-        )(f)
+    # Options available to any endpoint
+    f = click.option(
+        "--description", help=f"{update_help_prefix}Description for the endpoint"
+    )(f)
+    f = click.option(
+        "--info-link", help=f"{update_help_prefix}Link for Info about the endpoint"
+    )(f)
+    f = click.option(
+        "--contact-info", help=f"{update_help_prefix}Contact Info for the endpoint"
+    )(f)
+    f = click.option(
+        "--contact-email", help=f"{update_help_prefix}Contact Email for the endpoint"
+    )(f)
+    f = click.option(
+        "--organization", help=f"{update_help_prefix}Organization for the endpoint"
+    )(f)
+    f = click.option(
+        "--department",
+        help=f"{update_help_prefix}Department which operates the endpoint",
+    )(f)
+    f = click.option(
+        "--keywords",
+        help=f"{update_help_prefix}Comma separated list of keywords to help searches "
+        "for the endpoint",
+    )(f)
 
-        # Managed Endpoint options
-        f = click.option(
-            "--managed",
-            "managed",
-            is_flag=True,
-            flag_value=True,
-            default=None,
-            help=(
-                "Set the endpoint as a managed endpoint. Requires the "
-                "user to be a subscription manager. If the user has "
-                "multiple subscription IDs, --subscription-id must be used "
-                "instead"
-            ),
-        )(f)
-        f = click.option(
-            "--no-managed",
-            "managed",
-            is_flag=True,
-            flag_value=False,
-            default=None,
-            help=(
-                "Unset the endpoint as a managed endpoint. "
-                "Does not require the user to be a subscription manager. "
-                "Mutually exclusive with --subscription-id"
-            ),
-        )(f)
-        f = click.option(
-            "--subscription-id",
-            type=click.UUID,
-            default=None,
-            help=(
-                "Set the endpoint as a managed endpoint with the given "
-                "subscription ID. Mutually exclusive with "
-                "--no-managed"
-            ),
-        )(f)
-        f = mutex_option_group(
-            "--subscription-id",
-            MutexInfo(
-                "--no-managed",
-                param="managed",
-                present=lambda d: d.get("managed") is False,
-            ),
-        )(f)
+    f = click.option("--default-directory", help="Set the default directory")(f)
+    f = click.option(
+        "--no-default-directory",
+        is_flag=True,
+        flag_value=True,
+        default=None,
+        help="Unset any default directory on the endpoint",
+    )(f)
+    f = mutex_option_group("--default-directory", "--no-default-directory")(f)
 
-        f = click.option(
-            "--network-use",
-            default=None,
-            type=click.Choice(["normal", "minimal", "aggressive", "custom"]),
-            help=(
-                "Set the endpoint's network use level. If using custom, "
-                "the endpoint's max and preferred concurrency and "
-                "parallelism must be set "
-                "(Managed endpoints only) (Globus Connect Server only)"
-            ),
-        )(f)
-        f = click.option(
-            "--max-concurrency",
-            type=int,
-            default=None,
-            help=(
-                "Set the endpoint's max concurrency; "
-                "requires --network-use=custom "
-                "(Managed endpoints only) (Globus Connect Server only)"
-            ),
-        )(f)
-        f = click.option(
-            "--preferred-concurrency",
-            type=int,
-            default=None,
-            help=(
-                "Set the endpoint's preferred concurrency; "
-                "requires --network-use=custom "
-                "(Managed endpoints only) (Globus Connect Server only)"
-            ),
-        )(f)
-        f = click.option(
-            "--max-parallelism",
-            type=int,
-            default=None,
-            help=(
-                "Set the endpoint's max parallelism; "
-                "requires --network-use=custom "
-                "(Managed endpoints only) (Globus Connect Server only)"
-            ),
-        )(f)
-        f = click.option(
-            "--preferred-parallelism",
-            type=int,
-            default=None,
-            help=(
-                "Set the endpoint's preferred parallelism; "
-                "requires --network-use=custom "
-                "(Managed endpoints only) (Globus Connect Server only)"
-            ),
-        )(f)
+    f = click.option(
+        "--force-encryption/--no-force-encryption",
+        default=None,
+        help="(Un)Force the endpoint to encrypt transfers",
+    )(f)
+    f = click.option(
+        "--disable-verify/--no-disable-verify",
+        default=None,
+        is_flag=True,
+        help="(Un)Set the endpoint to ignore checksum verification",
+    )(f)
 
-        return f
+    # GCS only options
+    gcsonly = "(Globus Connect Server only)"
+    f = click.option(
+        "--public/--private",
+        "public",
+        default=None,
+        help=f"Set the endpoint to be public or private {gcsonly}",
+    )(f)
+    f = click.option("--myproxy-dn", help=f"Set the MyProxy Server DN {gcsonly}")(f)
+    f = click.option("--myproxy-server", help=f"Set the MyProxy Server URI {gcsonly}")(
+        f
+    )
+    f = click.option("--oauth-server", help=f"Set the OAuth Server URI {gcsonly}")(f)
+    f = click.option(
+        "--location",
+        type=LocationType(),
+        default=None,
+        help=f"Manually set the endpoint's latitude and longitude {gcsonly}",
+    )(f)
 
-    return detect_and_decorate(inner_decorator, args, kwargs)
+    # Managed Endpoint options
+    f = click.option(
+        "--managed",
+        "managed",
+        is_flag=True,
+        flag_value=True,
+        default=None,
+        help=(
+            "Set the endpoint as a managed endpoint. Requires the "
+            "user to be a subscription manager. If the user has "
+            "multiple subscription IDs, --subscription-id must be used "
+            "instead"
+        ),
+    )(f)
+    f = click.option(
+        "--no-managed",
+        "managed",
+        is_flag=True,
+        flag_value=False,
+        default=None,
+        help=(
+            "Unset the endpoint as a managed endpoint. "
+            "Does not require the user to be a subscription manager. "
+            "Mutually exclusive with --subscription-id"
+        ),
+    )(f)
+    f = click.option(
+        "--subscription-id",
+        type=click.UUID,
+        default=None,
+        help="Set the endpoint as a managed endpoint with the given "
+        "subscription ID. Mutually exclusive with --no-managed",
+    )(f)
+    f = mutex_option_group(
+        "--subscription-id",
+        MutexInfo(
+            "--no-managed", param="managed", present=lambda d: d.get("managed") is False
+        ),
+    )(f)
+
+    managedonly = "(Managed endpoints only)"
+    f = click.option(
+        "--network-use",
+        default=None,
+        type=click.Choice(["normal", "minimal", "aggressive", "custom"]),
+        help=(
+            "Set the endpoint's network use level. If using custom, "
+            "the endpoint's max and preferred concurrency and "
+            f"parallelism must be set {managedonly} {gcsonly}"
+        ),
+    )(f)
+    f = click.option(
+        "--max-concurrency",
+        type=int,
+        default=None,
+        help="Set the endpoint's max concurrency; requires --network-use=custom "
+        f"{managedonly} {gcsonly}",
+    )(f)
+    f = click.option(
+        "--preferred-concurrency",
+        type=int,
+        default=None,
+        help="Set the endpoint's preferred concurrency; requires --network-use=custom "
+        f"{managedonly} {gcsonly}",
+    )(f)
+    f = click.option(
+        "--max-parallelism",
+        type=int,
+        default=None,
+        help="Set the endpoint's max parallelism; requires --network-use=custom "
+        f"{managedonly} {gcsonly}",
+    )(f)
+    f = click.option(
+        "--preferred-parallelism",
+        type=int,
+        default=None,
+        help="Set the endpoint's preferred parallelism; requires --network-use=custom "
+        f"{managedonly} {gcsonly}",
+    )(f)
+
+    return f
 
 
 def validate_endpoint_create_and_update_params(endpoint_type, managed, params):
@@ -397,7 +356,8 @@ def validate_endpoint_create_and_update_params(endpoint_type, managed, params):
         params.pop("no_default_directory")
 
 
-def task_id_arg(*args, **kwargs):
+@_optargs_decorator
+def task_id_arg(f: Callable, *, required=True):
     """
     This is the `TASK_ID` argument consumed by many Transfer Task operations.
     It accept a toggle on whether or not it is required
@@ -417,12 +377,7 @@ def task_id_arg(*args, **kwargs):
     By default, the task ID is made required; pass `required=False` to the
     decorator arguments to make it optional.
     """
-
-    def inner_decorator(f, required=True):
-        f = click.argument("TASK_ID", required=required)(f)
-        return f
-
-    return detect_and_decorate(inner_decorator, args, kwargs)
+    return click.argument("TASK_ID", required=required)(f)
 
 
 def task_submission_options(f):
@@ -534,56 +489,55 @@ def task_submission_options(f):
     return f
 
 
-def delete_and_rm_options(*args, **kwargs):
+@_optargs_decorator
+def delete_and_rm_options(
+    f: Callable, *, supports_batch: bool = True, default_enable_globs: bool = False
+):
     """
     Options which apply both to `globus delete` and `globus rm`
     """
-
-    def inner_decorator(f, supports_batch=True, default_enable_globs=False):
+    f = click.option("--recursive", "-r", is_flag=True, help="Recursively delete dirs")(
+        f
+    )
+    f = click.option(
+        "--ignore-missing",
+        "-f",
+        is_flag=True,
+        help="Don't throw errors if the file or dir is absent",
+    )(f)
+    f = click.option(
+        "--star-silent",
+        "--unsafe",
+        "star_silent",
+        is_flag=True,
+        help=(
+            'Don\'t prompt when the trailing character is a "*".'
+            + (" Implicit in --batch" if supports_batch else "")
+        ),
+    )(f)
+    f = click.option(
+        "--enable-globs/--no-enable-globs",
+        is_flag=True,
+        default=default_enable_globs,
+        show_default=True,
+        help=(
+            "Enable expansion of *, ?, and [ ] characters in the last "
+            "component of file paths, unless they are escaped with "
+            "a preceeding backslash, \\"
+        ),
+    )(f)
+    if supports_batch:
         f = click.option(
-            "--recursive", "-r", is_flag=True, help="Recursively delete dirs"
-        )(f)
-        f = click.option(
-            "--ignore-missing",
-            "-f",
-            is_flag=True,
-            help="Don't throw errors if the file or dir is absent",
-        )(f)
-        f = click.option(
-            "--star-silent",
-            "--unsafe",
-            "star_silent",
+            "--batch",
             is_flag=True,
             help=(
-                'Don\'t prompt when the trailing character is a "*".'
-                + (" Implicit in --batch" if supports_batch else "")
+                "Accept a batch of paths on stdin (i.e. run in "
+                "batchmode). Uses ENDPOINT_ID as passed on the "
+                "commandline. Any commandline PATH given will be used "
+                "as a prefix to all paths given"
             ),
         )(f)
-        f = click.option(
-            "--enable-globs/--no-enable-globs",
-            is_flag=True,
-            default=default_enable_globs,
-            show_default=True,
-            help=(
-                "Enable expansion of *, ?, and [ ] characters in the last "
-                "component of file paths, unless they are escaped with "
-                "a preceeding backslash, \\"
-            ),
-        )(f)
-        if supports_batch:
-            f = click.option(
-                "--batch",
-                is_flag=True,
-                help=(
-                    "Accept a batch of paths on stdin (i.e. run in "
-                    "batchmode). Uses ENDPOINT_ID as passed on the "
-                    "commandline. Any commandline PATH given will be used "
-                    "as a prefix to all paths given"
-                ),
-            )(f)
-        return f
-
-    return detect_and_decorate(inner_decorator, args, kwargs)
+    return f
 
 
 def synchronous_task_wait_options(f):
@@ -664,7 +618,8 @@ def server_id_arg(f):
     return click.argument("server_id")(f)
 
 
-def server_add_and_update_opts(*args, **kwargs):
+@_optargs_decorator
+def server_add_and_update_opts(f: Callable, *, add=False):
     """
     shared collection of options for `globus transfer endpoint server add` and
     `globus transfer endpoint server update`.
@@ -706,60 +661,64 @@ def server_add_and_update_opts(*args, **kwargs):
 
         return (lower, upper) if lower <= upper else (upper, lower)
 
-    def inner_decorator(f, add=False):
-        if add:
-            f = click.argument("HOSTNAME")(f)
-        else:
-            f = click.option("--hostname", help="Server Hostname.")(f)
+    if add:
+        f = click.argument("HOSTNAME")(f)
+    else:
+        f = click.option("--hostname", help="Server Hostname.")(f)
 
-        default_scheme = "gsiftp" if add else None
-        f = click.option(
-            "--scheme",
-            help="Scheme for the Server.",
-            type=click.Choice(("gsiftp", "ftp"), case_sensitive=False),
-            default=default_scheme,
-            show_default=add,
-        )(f)
+    default_scheme = "gsiftp" if add else None
+    f = click.option(
+        "--scheme",
+        help="Scheme for the Server.",
+        type=click.Choice(("gsiftp", "ftp"), case_sensitive=False),
+        default=default_scheme,
+        show_default=add,
+    )(f)
 
-        default_port = 2811 if add else None
-        f = click.option(
-            "--port",
-            help="Port for Globus control channel connections.",
-            type=int,
-            default=default_port,
-            show_default=add,
-        )(f)
+    default_port = 2811 if add else None
+    f = click.option(
+        "--port",
+        help="Port for Globus control channel connections.",
+        type=int,
+        default=default_port,
+        show_default=add,
+    )(f)
 
+    f = click.option(
+        "--subject",
+        help=(
+            "Subject of the X509 Certificate of the server. When "
+            "unspecified, the CN must match the server hostname."
+        ),
+    )(f)
+
+    for adjective, our_preposition, their_preposition in [
+        ("incoming", "to", "from"),
+        ("outgoing", "from", "to"),
+    ]:
         f = click.option(
-            "--subject",
-            help=(
-                "Subject of the X509 Certificate of the server. When "
-                "unspecified, the CN must match the server hostname."
+            f"--{adjective}-data-ports",
+            callback=port_range_callback,
+            help="Indicate to firewall administrators at other sites how to "
+            "allow {} traffic {} this server {} their own. Specify as "
+            "either 'unspecified', 'unrestricted', or as range of "
+            "ports separated by a hyphen (e.g. '50000-51000') within "
+            "the 1024-65535 range.".format(
+                adjective, our_preposition, their_preposition
             ),
         )(f)
 
-        for adjective, our_preposition, their_preposition in [
-            ("incoming", "to", "from"),
-            ("outgoing", "from", "to"),
-        ]:
-            f = click.option(
-                f"--{adjective}-data-ports",
-                callback=port_range_callback,
-                help="Indicate to firewall administrators at other sites how to "
-                "allow {} traffic {} this server {} their own. Specify as "
-                "either 'unspecified', 'unrestricted', or as range of "
-                "ports separated by a hyphen (e.g. '50000-51000') within "
-                "the 1024-65535 range.".format(
-                    adjective, our_preposition, their_preposition
-                ),
-            )(f)
-
-        return f
-
-    return detect_and_decorate(inner_decorator, args, kwargs)
+    return f
 
 
-def security_principal_opts(*args, **kwargs):
+@_optargs_decorator
+def security_principal_opts(
+    f: Callable,
+    *,
+    allow_anonymous=False,
+    allow_all_authenticated=False,
+    allow_provision=False,
+):
     def preprocess_security_principals(f):
         @functools.wraps(f)
         def decorator(*args, **kwargs):
@@ -799,65 +758,55 @@ def security_principal_opts(*args, **kwargs):
 
         return decorator
 
-    def inner_decorator(
-        f, allow_anonymous=False, allow_all_authenticated=False, allow_provision=False
-    ):
+    # order matters here -- the preprocessor must run after option
+    # application, so it has to be applied first
+    if isinstance(f, click.Command):
+        # if we're decorating a command, put the preprocessor on its
+        # callback, not on `f` itself
+        f.callback = preprocess_security_principals(f.callback)
+    else:
+        # otherwise, we're applying to a function, but other decorators may
+        # have been applied to give it params
+        # so, copy __click_params__ to preserve those parameters
+        oldfun = f
+        f = preprocess_security_principals(f)
+        f.__click_params__ = getattr(oldfun, "__click_params__", [])  # type: ignore
 
-        # order matters here -- the preprocessor must run after option
-        # application, so it has to be applied first
-        if isinstance(f, click.Command):
-            # if we're decorating a command, put the preprocessor on its
-            # callback, not on `f` itself
-            f.callback = preprocess_security_principals(f.callback)
-        else:
-            # otherwise, we're applying to a function, but other decorators may
-            # have been applied to give it params
-            # so, copy __click_params__ to preserve those parameters
-            oldfun = f
-            f = preprocess_security_principals(f)
-            f.__click_params__ = getattr(oldfun, "__click_params__", [])
+    f = click.option(
+        "--identity",
+        metavar="IDENTITY_ID_OR_NAME",
+        help="Identity to use as a security principal",
+    )(f)
+    f = click.option(
+        "--group", metavar="GROUP_ID", help="Group to use as a security principal"
+    )(f)
 
+    if allow_anonymous:
         f = click.option(
-            "--identity",
-            metavar="IDENTITY_ID_OR_NAME",
-            help="Identity to use as a security principal",
+            "--anonymous",
+            "principal",
+            flag_value=("anonymous", ""),
+            help="Allow anyone access, even without logging in "
+            "(treated as a security principal)",
         )(f)
+    if allow_all_authenticated:
         f = click.option(
-            "--group", metavar="GROUP_ID", help="Group to use as a security principal"
+            "--all-authenticated",
+            "principal",
+            flag_value=("all_authenticated_users", ""),
+            help="Allow anyone access, as long as they login "
+            "(treated as a security principal)",
         )(f)
 
-        if allow_anonymous:
-            f = click.option(
-                "--anonymous",
-                "principal",
-                flag_value=("anonymous", ""),
-                help=(
-                    "Allow anyone access, even without logging in "
-                    "(treated as a security principal)"
-                ),
-            )(f)
-        if allow_all_authenticated:
-            f = click.option(
-                "--all-authenticated",
-                "principal",
-                flag_value=("all_authenticated_users", ""),
-                help=(
-                    "Allow anyone access, as long as they login"
-                    "(treated as a security principal)"
-                ),
-            )(f)
+    if allow_provision:
+        f = click.option(
+            "--provision-identity",
+            metavar="IDENTITY_USERNAME",
+            help="Identity username to use as a security principal. "
+            "Identity will be provisioned if it does not exist.",
+        )(f)
 
-        if allow_provision:
-            f = click.option(
-                "--provision-identity",
-                metavar="IDENTITY_USERNAME",
-                help="Identity username to use as a security principal. "
-                "Identity will be provisioned if it does not exist.",
-            )(f)
-
-        return f
-
-    return detect_and_decorate(inner_decorator, args, kwargs)
+    return f
 
 
 def no_local_server_option(f):
