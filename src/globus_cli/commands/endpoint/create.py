@@ -1,13 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import ENDPOINT_PLUS_REQPATH, command, one_use_option
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    assemble_generic_doc,
-    autoactivate,
-    get_client,
-)
+from globus_cli.services.transfer import assemble_generic_doc, autoactivate, get_client
 from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
 
 from ._common import (
@@ -73,7 +68,7 @@ $ globus endpoint create --shared host_ep:~/ my_shared_endpoint
         "--server."
     ),
 )
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def endpoint_create(**kwargs):
     """
     Create a new endpoint.

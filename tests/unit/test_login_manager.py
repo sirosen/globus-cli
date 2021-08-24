@@ -4,7 +4,7 @@ from unittest.mock import patch
 import click
 import pytest
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 
 
 def mock_get_tokens(resource_server):
@@ -27,7 +27,7 @@ def test_requires_login_success(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
     # single server
-    @requires_login("a.globus.org")
+    @LoginManager.requires_login("a.globus.org")
     def dummy_command():
         return True
 
@@ -38,7 +38,7 @@ def test_requires_login_success(mock_get_adapter):
 def test_requires_login_multi_server_success(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
-    @requires_login("a.globus.org", "b.globus.org")
+    @LoginManager.requires_login("a.globus.org", "b.globus.org")
     def dummy_command():
         return True
 
@@ -49,7 +49,7 @@ def test_requires_login_multi_server_success(mock_get_adapter):
 def test_requires_login_single_server_fail(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
-    @requires_login("c.globus.org")
+    @LoginManager.requires_login("c.globus.org")
     def dummy_command():
         return True
 
@@ -65,7 +65,7 @@ def test_requires_login_single_server_fail(mock_get_adapter):
 def test_requires_login_fail_two_servers(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
-    @requires_login("c.globus.org", "d.globus.org")
+    @LoginManager.requires_login("c.globus.org", "d.globus.org")
     def dummy_command():
         return True
 
@@ -85,7 +85,7 @@ def test_requires_login_fail_two_servers(mock_get_adapter):
 def test_requires_login_fail_multi_server(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
-    @requires_login("c.globus.org", "d.globus.org", "e.globus.org")
+    @LoginManager.requires_login("c.globus.org", "d.globus.org", "e.globus.org")
     def dummy_command():
         return True
 
@@ -105,7 +105,7 @@ def test_requires_login_fail_multi_server(mock_get_adapter):
 def test_requires_login_pass_manager(mock_get_adapter):
     mock_get_adapter._instance.get_token_data = mock_get_tokens
 
-    @requires_login(pass_manager=True)
+    @LoginManager.requires_login(pass_manager=True)
     def dummy_command(manager):
 
         assert manager.has_login("a.globus.org")

@@ -1,9 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import ENDPOINT_PLUS_OPTPATH, command
 from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
     autoactivate,
     get_client,
     iterable_response_to_dict,
@@ -117,7 +116,7 @@ $ globus ls $ep_id:/share/godata/ --filter '~*.txt'  # done with --filter, bette
         "this should behave like a non-recursive `ls`"
     ),
 )
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def ls_command(
     endpoint_plus_path,
     recursive_depth_limit,

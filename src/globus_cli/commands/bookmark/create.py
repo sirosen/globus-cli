@@ -1,8 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import ENDPOINT_PLUS_REQPATH, command
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import formatted_print
 
 
@@ -33,7 +33,7 @@ $ globus bookmark create \
 )
 @click.argument("endpoint_plus_path", type=ENDPOINT_PLUS_REQPATH)
 @click.argument("bookmark_name")
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def bookmark_create(endpoint_plus_path, bookmark_name):
     """
     Create a new bookmark. Given an endpoint plus a path, and a name for the bookmark,

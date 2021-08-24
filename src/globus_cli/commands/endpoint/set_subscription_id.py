@@ -2,9 +2,9 @@ import uuid
 
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import EXPLICIT_NULL, command, endpoint_id_arg
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
@@ -24,7 +24,7 @@ class SubscriptionIdType(click.ParamType):
 @command("set-subscription-id", short_help="Set an endpoint's subscription")
 @endpoint_id_arg
 @click.argument("SUBSCRIPTION_ID", type=SubscriptionIdType())
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def set_endpoint_subscription_id(**kwargs):
     """
     Set an endpoint's subscription ID.

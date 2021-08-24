@@ -1,9 +1,9 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, lookup_identity_name
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.auth import lookup_identity_name
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
 
 
@@ -29,7 +29,7 @@ $ globus endpoint permission show $ep_id $rule_id
 )
 @endpoint_id_arg
 @click.argument("rule_id")
-@requires_login(AUTH_RESOURCE_SERVER, TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS, LoginManager.TRANSFER_RS)
 def show_command(endpoint_id, rule_id):
     """
     Show detailed information about a single access control rule on an endpoint.

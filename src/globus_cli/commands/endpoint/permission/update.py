@@ -1,12 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    assemble_generic_doc,
-    get_client,
-)
+from globus_cli.services.transfer import assemble_generic_doc, get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
@@ -31,7 +27,7 @@ $ globus endpoint permission update $ep_id $rule_id --permissions r
     type=click.Choice(("r", "rw"), case_sensitive=False),
     help="Permissions to add. Read-Only or Read/Write",
 )
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def update_command(permissions, rule_id, endpoint_id):
     """
     Update an existing access control rule's permissions.

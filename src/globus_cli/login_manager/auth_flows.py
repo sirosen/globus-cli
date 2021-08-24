@@ -5,14 +5,8 @@ import click
 from .local_server import LocalServerError, start_local_server
 from .tokenstore import internal_auth_client, token_storage_adapter
 
-SCOPES = (
-    "openid profile email "
-    "urn:globus:auth:scope:auth.globus.org:view_identity_set "
-    "urn:globus:auth:scope:transfer.api.globus.org:all"
-)
 
-
-def do_link_auth_flow(session_params=None):
+def do_link_auth_flow(scopes, *, session_params=None):
     """
     Prompts the user with a link to authenticate with globus auth
     and authorize the CLI to act on their behalf.
@@ -26,7 +20,7 @@ def do_link_auth_flow(session_params=None):
     auth_client.oauth2_start_flow(
         redirect_uri=auth_client.base_url + "v2/web/auth-code",
         refresh_tokens=True,
-        requested_scopes=SCOPES,
+        requested_scopes=scopes,
     )
 
     # prompt
@@ -49,7 +43,7 @@ def do_link_auth_flow(session_params=None):
     return True
 
 
-def do_local_server_auth_flow(session_params=None):
+def do_local_server_auth_flow(scopes, *, session_params=None):
     """
     Starts a local http server, opens a browser to have the user authenticate,
     and gets the code redirected to the server (no copy and pasting required)
@@ -64,7 +58,7 @@ def do_local_server_auth_flow(session_params=None):
         # get the ConfidentialApp client object and start a flow
         auth_client = internal_auth_client()
         auth_client.oauth2_start_flow(
-            refresh_tokens=True, redirect_uri=redirect_uri, requested_scopes=SCOPES
+            refresh_tokens=True, redirect_uri=redirect_uri, requested_scopes=scopes
         )
         query_params = {"prompt": "login"}
         query_params.update(session_params)

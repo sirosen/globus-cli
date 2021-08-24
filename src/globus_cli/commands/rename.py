@@ -1,12 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    autoactivate,
-    get_client,
-)
+from globus_cli.services.transfer import autoactivate, get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
@@ -25,7 +21,7 @@ $ globus rename $ep_id:~/tempdir $ep_id:~/project-foo
 @endpoint_id_arg
 @click.argument("source", metavar="SOURCE_PATH")
 @click.argument("destination", metavar="DEST_PATH")
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def rename_command(endpoint_id, source, destination):
     """Rename a file or directory on an endpoint.
 

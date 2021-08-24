@@ -2,9 +2,14 @@ from unittest import mock
 
 import globus_sdk
 
+from globus_cli.login_manager import LoginManager
+
 
 def test_login_validates_token(run_line, mock_login_token_response):
-    with mock.patch("globus_cli.commands.login.internal_auth_client") as m:
+    # turn off test mode, to allow token validation
+    LoginManager._TEST_MODE = False
+
+    with mock.patch("globus_cli.login_manager.manager.internal_auth_client") as m:
         ac = mock.MagicMock(spec=globus_sdk.NativeAppAuthClient)
         m.return_value = ac
 

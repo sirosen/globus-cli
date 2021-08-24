@@ -1,9 +1,9 @@
 import click
 from globus_sdk import AuthAPIError
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
+from globus_cli.services.auth import get_auth_client
 from globus_cli.termio import (
     FORMAT_TEXT_RECORD,
     formatted_print,
@@ -53,7 +53,7 @@ $ globus whoami --linked-identities
     is_flag=True,
     help="Also show identities linked to the currently logged-in primary identity.",
 )
-@requires_login(AUTH_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS)
 def whoami_command(linked_identities):
     """
     Display information for the currently logged-in user.

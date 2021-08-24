@@ -1,73 +1,149 @@
 import functools
+from typing import Dict, List, Optional
 
 import click
+import globus_sdk
+from globus_sdk.scopes import AuthScopes, TransferScopes
 
 from globus_cli.utils import format_list_of_words, format_plural_str
 
-from .tokenstore import token_storage_adapter
+from .auth_flows import do_link_auth_flow, do_local_server_auth_flow
+from .local_server import is_remote_session
+from .tokenstore import internal_auth_client, token_storage_adapter
 
 
 class LoginManager:
+    # TEST_MODE skips token validation
+    _TEST_MODE: bool = False
+
+    AUTH_RS = "auth.globus.org"
+    TRANSFER_RS = "transfer.api.globus.org"
+
+    STATIC_SCOPES: Dict[str, List[str]] = {
+        AUTH_RS: [
+            AuthScopes.openid,
+            AuthScopes.profile,
+            AuthScopes.email,
+            AuthScopes.view_identity_set,
+        ],
+        TRANSFER_RS: [
+            TransferScopes.all,
+        ],
+    }
+
     def __init__(self):
         self._token_storage = token_storage_adapter()
 
-    def has_login(self, resource_server: str):
+    def is_logged_in_static(self) -> bool:
+        res = []
+        for rs_name in self.STATIC_SCOPES.keys():
+            res.append(self.has_login(rs_name))
+        return all(res)
+
+    def _validate_token(self, token: str) -> bool:
+        if self._TEST_MODE:
+            return True
+
+        auth_client = internal_auth_client()
+        try:
+            res = auth_client.oauth2_validate_token(token)
+        # if the instance client is invalid, an AuthAPIError will be raised
+        except globus_sdk.AuthAPIError:
+            return False
+        return bool(res["active"])
+
+    def has_login(self, resource_server: str) -> bool:
         """
-        Determines if the user has a refresh token for the given
+        Determines if the user has a valid refresh token for the given
         resource server
         """
         tokens = self._token_storage.get_token_data(resource_server)
-        return tokens is not None and "refresh_token" in tokens
+        if tokens is None or "refresh_token" not in tokens:
+            return False
+        rt = tokens["refresh_token"]
+        return self._validate_token(rt)
 
+    def run_login_flow(
+        self,
+        *,
+        no_local_server: bool = False,
+        local_server_message: Optional[str] = None,
+        epilog: Optional[str] = None,
+        session_params: Optional[dict] = None,
+        scopes: Optional[List[str]] = None,
+    ):
+        if scopes is None:  # flatten scopes to list of strings if none provided
+            scopes = [s for rs_scopes in self.STATIC_SCOPES.values() for s in rs_scopes]
+        # use a link login if remote session or user requested
+        if no_local_server or is_remote_session():
+            do_link_auth_flow(scopes, session_params=session_params)
+        # otherwise default to a local server login flow
+        else:
+            if local_server_message is not None:
+                click.echo(local_server_message)
+            do_local_server_auth_flow(scopes, session_params=session_params)
 
-def requires_login(*resource_servers: str, pass_manager: bool = False):
-    """
-    Command decorator for specifying a resource server that the user must have
-    tokens for in order to run the command.
+        if epilog is not None:
+            click.echo(epilog)
 
-    Simple usage for commands that have static resource needs: simply list all
-    needed resource servers as args:
+    @classmethod
+    def requires_login(cls, *resource_servers: str, pass_manager: bool = False):
+        """
+        Command decorator for specifying a resource server that the user must have
+        tokens for in order to run the command.
 
-    @requries_login("auth.globus.org")
+        Simple usage for commands that have static resource needs: simply list all
+        needed resource servers as args:
 
-    @requires_login("auth.globus.org", "transfer.api.globus.org")
+        @LoginManager.requries_login("auth.globus.org")
 
-    Usage for commands which have dynamic resource servers depending
-    on the arguments passed to the command (e.g. commands for the GCS API)
+        @LoginManager.requries_login(LoginManager.AUTH_RS)
 
-    @requies_login(pass_manager=True)
-    def command(login_manager, endpoint_id)
+        @LoginManager.requires_login("auth.globus.org", "transfer.api.globus.org")
 
-        login_manager.<do the thing>(endpoint_id)
+        @LoginManager.requries_login(LoginManager.AUTH_RS, LoginManager.TRANSFER_RS)
 
-    """
+        Usage for commands which have dynamic resource servers depending
+        on the arguments passed to the command (e.g. commands for the GCS API)
 
-    def inner(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            manager = LoginManager()
+        @LoginManager.requies_login(pass_manager=True)
+        def command(login_manager, endpoint_id)
 
-            # determine the set of resource servers missing logins
-            missing_servers = {s for s in resource_servers if not manager.has_login(s)}
+            login_manager.<do the thing>(endpoint_id)
 
-            # if we are missing logins, assemble error text
-            # text is slightly different for 1, 2, or 3+ missing servers
-            if missing_servers:
-                server_string = format_list_of_words(*missing_servers)
-                message_prefix = format_plural_str(
-                    "Missing {login}", {"login": "logins"}, len(missing_servers) != 1
-                )
+        """
 
-                raise click.ClickException(
-                    message_prefix + f" for {server_string}, please run 'globus login'"
-                )
+        def inner(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                manager = cls()
 
-            # if pass_manager is True, pass it as an additional positional arg
-            if pass_manager:
-                return func(*args, manager, **kwargs)
-            else:
-                return func(*args, **kwargs)
+                # determine the set of resource servers missing logins
+                missing_servers = {
+                    s for s in resource_servers if not manager.has_login(s)
+                }
 
-        return wrapper
+                # if we are missing logins, assemble error text
+                # text is slightly different for 1, 2, or 3+ missing servers
+                if missing_servers:
+                    server_string = format_list_of_words(*missing_servers)
+                    message_prefix = format_plural_str(
+                        "Missing {login}",
+                        {"login": "logins"},
+                        len(missing_servers) != 1,
+                    )
 
-    return inner
+                    raise click.ClickException(
+                        message_prefix
+                        + f" for {server_string}, please run 'globus login'"
+                    )
+
+                # if pass_manager is True, pass it as an additional positional arg
+                if pass_manager:
+                    return func(*args, manager, **kwargs)
+                else:
+                    return func(*args, **kwargs)
+
+            return wrapper
+
+        return inner

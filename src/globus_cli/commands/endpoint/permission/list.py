@@ -1,9 +1,9 @@
 from globus_sdk import IdentityMap
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.auth import get_auth_client
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import formatted_print
 
 
@@ -18,7 +18,7 @@ $ globus endpoint permission list $ep_id
 """,
 )
 @endpoint_id_arg
-@requires_login(AUTH_RESOURCE_SERVER, TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS, LoginManager.TRANSFER_RS)
 def list_command(endpoint_id):
     """List all rules in an endpoint's access control list."""
     client = get_client()

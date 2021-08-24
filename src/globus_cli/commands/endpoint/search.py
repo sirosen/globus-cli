@@ -1,11 +1,10 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, maybe_lookup_identity_id
+from globus_cli.services.auth import maybe_lookup_identity_id
 from globus_cli.services.transfer import (
     ENDPOINT_LIST_FIELDS,
-    TRANSFER_RESOURCE_SERVER,
     get_client,
     iterable_response_to_dict,
 )
@@ -71,7 +70,7 @@ $ globus endpoint search --filter-scope my-endpoints
     help="The maximum number of results to return.",
 )
 @click.argument("filter_fulltext", required=False)
-@requires_login(AUTH_RESOURCE_SERVER, TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS, LoginManager.TRANSFER_RS)
 def endpoint_search(filter_fulltext, limit, filter_owner_id, filter_scope):
     """
     Search for Globus endpoints with search filters. If --filter-scope is set to the

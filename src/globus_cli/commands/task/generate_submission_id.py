@@ -1,6 +1,6 @@
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
@@ -19,7 +19,7 @@ $ globus transfer --submission-id "$sub_id" ...
 ----
 """,
 )
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def generate_submission_id():
     """
     Generate a new task submission ID for use in  `globus transfer` and `gloubs delete`.

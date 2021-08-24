@@ -20,6 +20,11 @@ yaml = YAML()
 log = logging.getLogger(__name__)
 
 
+@pytest.fixture(autouse=True)
+def set_login_manager_testmode():
+    globus_cli.login_manager.LoginManager._TEST_MODE = True
+
+
 @pytest.fixture(scope="session")
 def go_ep1_id():
     return "ddb59aef-6d04-11e5-ba46-22000b92c6ec"

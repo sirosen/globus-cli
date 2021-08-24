@@ -1,10 +1,6 @@
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    assemble_generic_doc,
-    get_client,
-)
+from globus_cli.services.transfer import assemble_generic_doc, get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 from ._common import (
@@ -16,7 +12,7 @@ from ._common import (
 @command("update")
 @endpoint_id_arg
 @endpoint_create_and_update_params(create=False)
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def endpoint_update(**kwargs):
     """Update attributes of an endpoint"""
     # validate params. Requires a get call to check the endpoint type

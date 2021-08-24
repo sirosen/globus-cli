@@ -1,12 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    activation_requirements_help_text,
-    get_client,
-)
+from globus_cli.services.transfer import activation_requirements_help_text, get_client
 from globus_cli.termio import formatted_print
 
 
@@ -82,7 +78,7 @@ fi
         "since Epoch), not a number of seconds into the future."
     ),
 )
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def endpoint_is_activated(endpoint_id, until, absolute_time):
     """
     Check if an endpoint is activated or requires activation.

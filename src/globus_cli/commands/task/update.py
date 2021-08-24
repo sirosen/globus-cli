@@ -1,12 +1,8 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    assemble_generic_doc,
-    get_client,
-)
+from globus_cli.services.transfer import assemble_generic_doc, get_client
 from globus_cli.termio import formatted_print
 
 from ._common import task_id_arg
@@ -31,7 +27,7 @@ $ globus task update TASK_ID --label 'my task updated by me' \
 @task_id_arg
 @click.option("--label", help="New Label for the task")
 @click.option("--deadline", help="New Deadline for the task")
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def update_task(deadline, label, task_id):
     """
     Update label and/or deadline on an active task.

@@ -1,13 +1,9 @@
 import click
 
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import ENDPOINT_PLUS_REQPATH, command, security_principal_opts
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, maybe_lookup_identity_id
-from globus_cli.services.transfer import (
-    TRANSFER_RESOURCE_SERVER,
-    assemble_generic_doc,
-    get_client,
-)
+from globus_cli.services.auth import maybe_lookup_identity_id
+from globus_cli.services.transfer import assemble_generic_doc, get_client
 from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
 
 
@@ -51,7 +47,7 @@ $ globus endpoint permission create $ep_id:/ --permissions rw --identity go@glob
     help="A custom message to add to email notifications",
 )
 @click.argument("endpoint_plus_path", type=ENDPOINT_PLUS_REQPATH)
-@requires_login(AUTH_RESOURCE_SERVER, TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS, LoginManager.TRANSFER_RS)
 def create_command(
     principal, permissions, endpoint_plus_path, notify_email, notify_message
 ):

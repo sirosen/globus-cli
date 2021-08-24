@@ -3,12 +3,12 @@ import time
 import globus_sdk
 
 from globus_cli.login_manager import (
+    LoginManager,
     internal_auth_client,
-    requires_login,
     token_storage_adapter,
 )
 from globus_cli.parsing import command
-from globus_cli.services.auth import AUTH_RESOURCE_SERVER, get_auth_client
+from globus_cli.services.auth import get_auth_client
 from globus_cli.termio import formatted_print, print_command_hint
 
 
@@ -36,7 +36,7 @@ $ globus session show --format json
 ----
 """,
 )
-@requires_login(AUTH_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.AUTH_RS)
 def session_show():
     """List all identities in your current CLI auth session.
 
@@ -53,7 +53,7 @@ def session_show():
     except AttributeError:  # if we have no RefreshTokenAuthorizor
         pass
 
-    tokendata = adapter.get_token_data("auth.globus.org")
+    tokendata = adapter.get_token_data(LoginManager.AUTH_RS)
     # if there's no token (e.g. not logged in), stub with empty data
     if not tokendata:
         session_info = {}

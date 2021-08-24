@@ -1,6 +1,6 @@
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import TRANSFER_RESOURCE_SERVER, get_client
+from globus_cli.services.transfer import get_client
 from globus_cli.termio import FORMAT_TEXT_RAW, formatted_print
 
 
@@ -17,7 +17,7 @@ $ globus endpoint deactivate $ep_id
 """,
 )
 @endpoint_id_arg
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def endpoint_deactivate(endpoint_id):
     """
     Remove the credential previously assigned to an endpoint via

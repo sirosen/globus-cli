@@ -1,10 +1,6 @@
 import click
 
-from globus_cli.login_manager import (
-    do_link_auth_flow,
-    do_local_server_auth_flow,
-    is_remote_session,
-)
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, no_local_server_option
 
 
@@ -25,20 +21,17 @@ def session_consent(scopes, no_local_server):
     """
     session_params = {"scope": " ".join(scopes)}
 
-    # use a link login if remote session or user requested
-    if no_local_server or is_remote_session():
-        do_link_auth_flow(session_params=session_params)
-
-    # otherwise default to a local server login flow
-    else:
-        click.echo(
+    manager = LoginManager()
+    manager.run_login_flow(
+        no_local_server=no_local_server,
+        local_server_message=(
             "You are running 'globus session consent', "
             "which should automatically open a browser window for you to "
             "authenticate with specific identities.\n"
             "If this fails or you experience difficulty, try "
             "'globus session consent --no-local-server'"
             "\n---"
-        )
-        do_local_server_auth_flow(session_params=session_params)
-
-    click.echo("\nYou have successfully updated your CLI session.\n")
+        ),
+        epilog="\nYou have successfully updated your CLI session.\n",
+        session_params=session_params,
+    )

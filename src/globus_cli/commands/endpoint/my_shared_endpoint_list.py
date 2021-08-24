@@ -1,10 +1,6 @@
-from globus_cli.login_manager import requires_login
+from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.services.transfer import (
-    ENDPOINT_LIST_FIELDS,
-    TRANSFER_RESOURCE_SERVER,
-    get_client,
-)
+from globus_cli.services.transfer import ENDPOINT_LIST_FIELDS, get_client
 from globus_cli.termio import formatted_print
 
 
@@ -19,7 +15,7 @@ $ globus endpoint my-shared-endpoint-list $ep_id
 """,
 )
 @endpoint_id_arg
-@requires_login(TRANSFER_RESOURCE_SERVER)
+@LoginManager.requires_login(LoginManager.TRANSFER_RS)
 def my_shared_endpoint_list(endpoint_id):
     """
     Show a list of all shared endpoints hosted on the target endpoint for which the user

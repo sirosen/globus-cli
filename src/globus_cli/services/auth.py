@@ -8,9 +8,6 @@ from globus_cli.login_manager import internal_auth_client, token_storage_adapter
 # what qualifies as a valid Identity Name?
 _IDENTITY_NAME_REGEX = r"^[a-zA-Z0-9]+.*@[a-zA-z0-9-]+\..*[a-zA-Z]+$"
 
-# constant for token and login management
-AUTH_RESOURCE_SERVER = "auth.globus.org"
-
 
 def _is_uuid(s):
     try:
