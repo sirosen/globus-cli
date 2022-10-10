@@ -2,7 +2,7 @@ import click
 
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
+from globus_cli.termio import FORMAT_TEXT_RECORD, Field, formatted_print
 
 
 @command(
@@ -39,9 +39,9 @@ def show_command(*, login_manager: LoginManager, endpoint_id, rule_id):
         rule,
         text_format=FORMAT_TEXT_RECORD,
         fields=(
-            ("Rule ID", "id"),
-            ("Permissions", "permissions"),
-            ("Shared With", _shared_with_keyfunc),
-            ("Path", "path"),
+            Field("Rule ID", "id"),
+            Field("Permissions"),
+            Field("Shared With", _shared_with_keyfunc),
+            Field("Path"),
         ),
     )

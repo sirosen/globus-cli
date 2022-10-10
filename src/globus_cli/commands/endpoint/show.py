@@ -3,34 +3,34 @@ import click
 from globus_cli.endpointish import Endpointish
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.termio import FORMAT_TEXT_RECORD, FormatField, formatted_print
+from globus_cli.termio import FORMAT_TEXT_RECORD, Field, formatted_print
 
 STANDARD_FIELDS = (
-    ("Display Name", "display_name"),
-    ("ID", "id"),
-    ("Owner", "owner_string"),
-    FormatField("Description", "description", wrap_enabled=True),
-    ("Activated", "activated"),
-    ("Shareable", "shareable"),
-    ("Department", "department"),
-    ("Keywords", "keywords"),
-    ("Endpoint Info Link", "info_link"),
-    ("Contact E-mail", "contact_email"),
-    ("Organization", "organization"),
-    ("Department", "department"),
-    ("Other Contact Info", "contact_info"),
-    ("Visibility", "public"),
-    ("Default Directory", "default_directory"),
-    ("Force Encryption", "force_encryption"),
-    ("Managed Endpoint", lambda res: bool(res["subscription_id"])),
-    ("Subscription ID", "subscription_id"),
-    ("Legacy Name", "canonical_name"),
-    ("Local User Info Available", "local_user_info_available"),
+    Field("Display Name"),
+    Field("ID"),
+    Field("Owner", "owner_string"),
+    Field("Description", wrap_enabled=True),
+    Field("Activated"),
+    Field("Shareable"),
+    Field("Department"),
+    Field("Keywords"),
+    Field("Endpoint Info Link", "info_link"),
+    Field("Contact E-mail", "contact_email"),
+    Field("Organization"),
+    Field("Department"),
+    Field("Other Contact Info", "contact_info"),
+    Field("Visibility", "public"),
+    Field("Default Directory"),
+    Field("Force Encryption"),
+    Field("Managed Endpoint", "subscription_id", typ=Field.types.Bool),
+    Field("Subscription ID"),
+    Field("Legacy Name", "canonical_name"),
+    Field("Local User Info Available"),
 )
 
 GCP_FIELDS = STANDARD_FIELDS + (
-    ("GCP Connected", "gcp_connected"),
-    ("GCP Paused (macOS only)", "gcp_paused"),
+    Field("GCP Connected"),
+    Field("GCP Paused (macOS only)", "gcp_paused"),
 )
 
 

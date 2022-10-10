@@ -2,36 +2,36 @@ import click
 
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
-from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
+from globus_cli.termio import FORMAT_TEXT_RECORD, Field, formatted_print
 
 from ._common import task_id_arg
 
 EXPLICIT_PAUSE_MSG_FIELDS = [
-    ("Source Endpoint", "source_pause_message"),
-    ("Source Shared Endpoint", "source_pause_message_share"),
-    ("Destination Endpoint", "destination_pause_message"),
-    ("Destination Shared Endpoint", "destination_pause_message_share"),
+    Field("Source Endpoint", "source_pause_message"),
+    Field("Source Shared Endpoint", "source_pause_message_share"),
+    Field("Destination Endpoint", "destination_pause_message"),
+    Field("Destination Shared Endpoint", "destination_pause_message_share"),
 ]
 
 PAUSE_RULE_OPERATION_FIELDS = [
-    ("write", "pause_task_transfer_write"),
-    ("read", "pause_task_transfer_read"),
-    ("delete", "pause_task_delete"),
-    ("rename", "pause_rename"),
-    ("mkdir", "pause_mkdir"),
-    ("ls", "pause_ls"),
+    Field("write", "pause_task_transfer_write"),
+    Field("read", "pause_task_transfer_read"),
+    Field("delete", "pause_task_delete"),
+    Field("rename", "pause_rename"),
+    Field("mkdir", "pause_mkdir"),
+    Field("ls", "pause_ls"),
 ]
 
 PAUSE_RULE_DISPLAY_FIELDS = [
-    (
+    Field(
         "Operations",
         lambda rule: "/".join(
             label for label, key in PAUSE_RULE_OPERATION_FIELDS if rule[key]
         ),
     ),
-    ("On Endpoint", "endpoint_display_name"),
-    ("All Users", lambda rule: "No" if rule["identity_id"] else "Yes"),
-    ("Message", "message"),
+    Field("On Endpoint", "endpoint_display_name"),
+    Field("All Users", lambda rule: "No" if rule["identity_id"] else "Yes"),
+    Field("Message"),
 ]
 
 
@@ -84,7 +84,7 @@ def task_pause_info(*, login_manager: LoginManager, task_id):
             field
             for field in EXPLICIT_PAUSE_MSG_FIELDS
             # n.b. some keys are absent for completed tasks
-            if res.get(field[1])
+            if field.keyfunc(res) is not None
         ]
         effective_pause_rules = res["pause_rules"]
 

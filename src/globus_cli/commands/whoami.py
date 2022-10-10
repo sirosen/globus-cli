@@ -5,6 +5,7 @@ from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command
 from globus_cli.termio import (
     FORMAT_TEXT_RECORD,
+    Field,
     formatted_print,
     is_verbose,
     print_command_hint,
@@ -106,10 +107,10 @@ def whoami_command(*, login_manager, linked_identities):
             res,
             text_format=FORMAT_TEXT_RECORD,
             fields=[
-                ("Username", "preferred_username"),
-                ("Name", "name"),
-                ("ID", "sub"),
-                ("Email", "email"),
+                Field("Username", "preferred_username"),
+                Field("Name"),
+                Field("ID", "sub"),
+                Field("Email"),
             ],
             simple_text=(None if is_verbose() else res["preferred_username"]),
         )

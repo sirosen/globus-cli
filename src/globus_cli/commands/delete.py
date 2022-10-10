@@ -12,6 +12,7 @@ from globus_cli.parsing import (
 )
 from globus_cli.termio import (
     FORMAT_TEXT_RECORD,
+    Field,
     err_is_terminal,
     formatted_print,
     term_is_interactive,
@@ -179,9 +180,7 @@ def delete_command(
         delete_data.add_item(path)
 
     if dry_run:
-        formatted_print(
-            delete_data.data, response_key="DATA", fields=[("Path", "path")]
-        )
+        formatted_print(delete_data.data, response_key="DATA", fields=[Field("Path")])
         # exit safely
         return
 
@@ -189,5 +188,5 @@ def delete_command(
     formatted_print(
         res,
         text_format=FORMAT_TEXT_RECORD,
-        fields=(("Message", "message"), ("Task ID", "task_id")),
+        fields=(Field("Message"), Field("Task ID")),
     )

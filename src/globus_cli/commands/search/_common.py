@@ -5,7 +5,7 @@ from typing import Any, Callable, Iterable
 import click
 import globus_sdk
 
-from globus_cli.types import FIELD_LIST_T
+from globus_cli.termio import Field
 
 
 def index_id_arg(f: Callable) -> Callable:
@@ -23,7 +23,7 @@ def resolved_principals_field(
     name: str = "Principal",
     type_key: str = "principal_type",
     value_key: str = "principal",
-) -> tuple[str, Callable[[dict], str]]:
+) -> Field:
     resolved_ids = globus_sdk.IdentityMap(
         auth_client,
         (x[value_key].split(":")[-1] for x in items if x[type_key] == "identity")
@@ -44,11 +44,7 @@ def resolved_principals_field(
             ret = item[value_key]
         return str(ret)
 
-    return (name, render_principal)
+    return Field(name, render_principal)
 
 
-INDEX_FIELDS: FIELD_LIST_T = [
-    ("Index ID", "id"),
-    ("Display Name", "display_name"),
-    ("Status", "status"),
-]
+INDEX_FIELDS = [Field("Index ID", "id"), Field("Display Name"), Field("Status")]

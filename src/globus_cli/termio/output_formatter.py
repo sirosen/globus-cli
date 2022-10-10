@@ -1,5 +1,10 @@
+from __future__ import annotations
+
+import datetime
+import enum
 import json
 import textwrap
+import typing
 
 import click
 import globus_sdk
@@ -18,39 +23,58 @@ FORMAT_TEXT_RAW = "text_raw"
 FORMAT_TEXT_CUSTOM = "text_custom"
 
 
-class FormatField:
-    """A field which will be shown in record or table output.
-    When fields are provided as tuples, they are converted into this.
+class _FieldTypes(enum.Enum):
+    Str = enum.auto()
+    Bool = enum.auto()
+    List = enum.auto()
+    Date = enum.auto()
 
-    :param name: the displayed name for the record field or the column
-        name for table output
-    :param key: a str for indexing into print data or a callable which
-        produces a string given the print data
-    :param wrap_enabled: in record output, is this field allowed to wrap
-    """
 
-    def __init__(self, name, key, wrap_enabled=False):
+class Field:
+    types = _FieldTypes
+
+    def __init__(
+        self,
+        name: str,
+        keyfunc: str | typing.Callable[[dict], typing.Any] | None = None,
+        wrap_enabled: bool = False,
+        typ: _FieldTypes = _FieldTypes.Str,
+    ) -> None:
         self.name = name
-        self.keyfunc = _key_to_keyfunc(key)
+        if keyfunc is None:
+            self.keyfunc = _key_to_keyfunc(name.lower().replace(" ", "_"))
+        elif isinstance(keyfunc, str):
+            self.keyfunc = _key_to_keyfunc(keyfunc)
+        else:
+            self.keyfunc = keyfunc
+
         self.wrap_enabled = wrap_enabled
+        self.typ = typ
 
-    @classmethod
-    def coerce(cls, rawfield):
-        """given a (FormatField|tuple), convert to a FormatField"""
-        if isinstance(rawfield, cls):
-            return rawfield
-        elif isinstance(rawfield, tuple):
-            if len(rawfield) == 2:
-                return cls(rawfield[0], rawfield[1])
-            raise ValueError("cannot coerce tuple of bad length")
-        raise TypeError(
-            "FormatField.coerce must be given a field or tuple, "
-            "got {}".format(type(rawfield))
-        )
+    def __call__(self, data) -> typing.Any:
+        value = self.keyfunc(data)
+        if self.typ is _FieldTypes.Str:
+            return value
+        elif self.typ is _FieldTypes.Bool:
+            return bool(value)
+        elif self.typ is _FieldTypes.List:
+            return ",".join(value)
+        elif self.typ is _FieldTypes.date:
+            return _isoformat_to_local(value)
+        else:
+            raise NotImplementedError(f"unknown field type {self.typ!r}")
 
-    def __call__(self, data):
-        """extract the field's value from the print data"""
-        return self.keyfunc(data)
+
+def _isoformat_to_local(
+    utc_str: str | None, localtz: datetime.tzinfo | None = None
+) -> str | None:
+    if not utc_str:
+        return None
+    # let this raise ValueError
+    date = datetime.datetime.fromisoformat(utc_str)
+    if date.tzinfo is None:
+        return date.strftime("%Y-%m-%d %H:%M:%S")
+    return date.astimezone(tz=localtz).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def _key_to_keyfunc(k):
@@ -144,7 +168,7 @@ def colon_formatted_print(data, fields):
         click.echo("{}{}".format((field.name + ":").ljust(maxlen), value))
 
 
-def print_table(iterable, fields, print_headers=True):
+def print_table(iterable, fields: typing.Iterable[Field], print_headers=True):
     # the iterable may not be safe to walk multiple times, so we must walk it
     # only once -- however, to let us write things naturally, convert it to a
     # list and we can assume it is safe to walk repeatedly
@@ -208,7 +232,7 @@ def formatted_print(
     text_epilog=None,
     text_format=FORMAT_TEXT_TABLE,
     json_converter=None,
-    fields=None,
+    fields: typing.Iterable[Field] | None = None,
     response_key=None,
 ):
     """
@@ -232,8 +256,8 @@ def formatted_print(
     must take ``response_data`` and produce another dict or dict-like object
     (json/unix output only)
 
-    ``fields`` is an iterable of fields. They may be expressed as FormatField
-    objects, (fieldname, key_string) tuples, or (fieldname, key_func) tuples.
+    ``fields`` is an iterable of fields. They may be expressed as Field objects,
+    (fieldname, key_string) tuples, or (fieldname, key_func) tuples.
 
     ``response_key`` is a key into the data to print. When used with table
     printing, it must get an iterable out, and when used with raw printing, it
@@ -305,10 +329,6 @@ def formatted_print(
         # if there's an epilog, print it after any text
         if text_epilog is not None:
             click.echo(text_epilog)
-
-    # ensure fields are FormatField instances
-    if fields:
-        fields = [FormatField.coerce(f) for f in fields]
 
     if isinstance(text_format, str):
         text_format = text_format

@@ -2,57 +2,54 @@ import click
 
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, mutex_option_group
-from globus_cli.termio import FORMAT_TEXT_RECORD, formatted_print
+from globus_cli.termio import FORMAT_TEXT_RECORD, Field, formatted_print
 
 from ._common import task_id_arg
 
 COMMON_FIELDS = [
-    ("Label", "label"),
-    ("Task ID", "task_id"),
-    ("Is Paused", "is_paused"),
-    ("Type", "type"),
-    ("Directories", "directories"),
-    ("Files", "files"),
-    ("Status", "status"),
-    ("Request Time", "request_time"),
-    ("Faults", "faults"),
-    ("Total Subtasks", "subtasks_total"),
-    ("Subtasks Succeeded", "subtasks_succeeded"),
-    ("Subtasks Pending", "subtasks_pending"),
-    ("Subtasks Retrying", "subtasks_retrying"),
-    ("Subtasks Failed", "subtasks_failed"),
-    ("Subtasks Canceled", "subtasks_canceled"),
-    ("Subtasks Expired", "subtasks_expired"),
-    ("Subtasks with Skipped Errors", "subtasks_skipped_errors"),
+    Field("Label"),
+    Field("Task ID"),
+    Field("Is Paused"),
+    Field("Type"),
+    Field("Directories"),
+    Field("Files"),
+    Field("Status"),
+    Field("Request Time"),
+    Field("Faults"),
+    Field("Total Subtasks", "subtasks_total"),
+    Field("Subtasks Succeeded"),
+    Field("Subtasks Pending"),
+    Field("Subtasks Retrying"),
+    Field("Subtasks Failed"),
+    Field("Subtasks Canceled"),
+    Field("Subtasks Expired"),
+    Field("Subtasks with Skipped Errors", "subtasks_skipped_errors"),
 ]
 
-ACTIVE_FIELDS = [("Deadline", "deadline"), ("Details", "nice_status")]
+ACTIVE_FIELDS = [Field("Deadline"), Field("Details", "nice_status")]
 
-COMPLETED_FIELDS = [("Completion Time", "completion_time")]
+COMPLETED_FIELDS = [Field("Completion Time")]
 
 DELETE_FIELDS = [
-    ("Endpoint", "source_endpoint_display_name"),
-    ("Endpoint ID", "source_endpoint_id"),
+    Field("Endpoint", "source_endpoint_display_name"),
+    Field("Endpoint ID", "source_endpoint_id"),
 ]
 
 TRANSFER_FIELDS = [
-    ("Source Endpoint", "source_endpoint_display_name"),
-    ("Source Endpoint ID", "source_endpoint_id"),
-    ("Destination Endpoint", "destination_endpoint_display_name"),
-    ("Destination Endpoint ID", "destination_endpoint_id"),
-    ("Bytes Transferred", "bytes_transferred"),
-    ("Bytes Per Second", "effective_bytes_per_second"),
+    Field("Source Endpoint", "source_endpoint_display_name"),
+    Field("Source Endpoint ID"),
+    Field("Destination Endpoint", "destination_endpoint_display_name"),
+    Field("Destination Endpoint ID"),
+    Field("Bytes Transferred"),
+    Field("Bytes Per Second", "effective_bytes_per_second"),
 ]
 
-SUCCESSFULL_TRANSFER_FIELDS = [
-    ("Source Path", "source_path"),
-    ("Destination Path", "destination_path"),
-]
+SUCCESSFULL_TRANSFER_FIELDS = [Field("Source Path"), Field("Destination Path")]
 
 SKIPPED_PATHS_FIELDS = [
-    ("Source Path", "source_path"),
-    ("Destination Path", "destination_path"),
-    ("Error Code", "error_code"),
+    Field("Source Path"),
+    Field("Destination Path"),
+    Field("Error Code"),
 ]
 
 

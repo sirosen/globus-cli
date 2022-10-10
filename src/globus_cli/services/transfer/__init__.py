@@ -1,3 +1,4 @@
+from ..termio import Field
 from .activation import (
     activation_requirements_help_text,
     autoactivate,
@@ -14,9 +15,9 @@ from .delegate_proxy import fill_delegate_proxy_activation_requirements
 from .recursive_ls import RecursiveLsResponse
 
 ENDPOINT_LIST_FIELDS = (
-    ("ID", "id"),
-    ("Owner", "owner_string"),
-    ("Display Name", display_name_or_cname),
+    Field("ID"),
+    Field("Owner", "owner_string"),
+    Field("Display Name", display_name_or_cname),
 )
 
 

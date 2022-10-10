@@ -5,7 +5,8 @@ from typing import Any, Callable, Iterable, Iterator, TextIO, cast
 
 import click
 
-from globus_cli.types import DATA_CONTAINER_T, FIELD_LIST_T
+from globus_cli.termio import Field
+from globus_cli.types import DATA_CONTAINER_T
 
 
 def get_current_option_help(*, filter_names: Iterable[str] | None = None) -> list[str]:
@@ -77,9 +78,9 @@ def sorted_json_field(
 
 
 def filter_fields(
-    check_fields: FIELD_LIST_T,
+    check_fields: list[Field],
     container: DATA_CONTAINER_T,
-) -> FIELD_LIST_T:
+) -> list[Field]:
     """
     Given a set of fields, this is a list of fields actually found in some containing
     object.
@@ -87,7 +88,7 @@ def filter_fields(
     Always includes keyfunc fields unless they set the magic _filter_key attribute
     sorted_json_field above is a good example of doing this
     """
-    fields: FIELD_LIST_T = []
+    fields: list[Field] = []
     for field_to_check in check_fields:
         # FormatField objects get included always
         if not isinstance(field_to_check, tuple):

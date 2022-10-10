@@ -2,7 +2,7 @@ import globus_sdk
 
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import command, endpoint_id_arg
-from globus_cli.termio import formatted_print
+from globus_cli.termio import Field, formatted_print
 
 
 @command(
@@ -43,9 +43,9 @@ def list_command(*, login_manager: LoginManager, endpoint_id):
     formatted_print(
         rules,
         fields=[
-            ("Rule ID", "id"),
-            ("Permissions", "permissions"),
-            ("Shared With", principal_str),
-            ("Path", "path"),
+            Field("Rule ID", "id"),
+            Field("Permissions"),
+            Field("Shared With", principal_str),
+            Field("Path"),
         ],
     )
