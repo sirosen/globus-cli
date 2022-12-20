@@ -12,7 +12,7 @@ from ._common import DELETED_JOB_FORMAT_FIELDS
 @command("delete", short_help="Delete a timer job", hidden=True)
 @click.argument("JOB_ID", type=uuid.UUID)
 @LoginManager.requires_login(LoginManager.TIMER_RS)
-def delete_command(login_manager: LoginManager, job_id: uuid.UUID):
+def delete_command(login_manager: LoginManager, job_id: uuid.UUID) -> None:
     """
     Delete a Timer job.
 

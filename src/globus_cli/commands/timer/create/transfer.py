@@ -116,7 +116,7 @@ def transfer_command(
     skip_source_errors: bool,
     fail_on_quota_errors: bool,
     notify: dict[str, bool],
-):
+) -> None:
     """
     Create a Timer job which will run a transfer on a recurring schedule
     according to the parameters provided.
