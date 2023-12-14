@@ -23,6 +23,16 @@ def _update_session_params_all_case(
     session_params["session_required_identities"] = ",".join(identity_ids)
 
 
+def _update_session_params_any_case(
+    identity_set: list[dict[str, t.Any]], session_params: dict[str, t.Any]
+) -> None:
+    """if --any use every identity domain in the user's identity set"""
+    usernames = [x["username"] for x in identity_set]
+    domains = [x.partition("@")[2] for x in usernames]
+    # set session params once we have all identity ids
+    session_params["session_required_single_domain"] = ",".join(domains)
+
+
 def _update_session_params_identities_case(
     identity_set: list[dict[str, t.Any]],
     session_params: dict[str, t.Any],
@@ -96,6 +106,11 @@ def _update_session_params_identities_case(
     is_flag=True,
     help="Add every identity in your identity set to your session",
 )
+@click.option(
+    "--any",
+    is_flag=True,
+    help="Add any one identity in your identity set to your session",
+)
 @LoginManager.requires_login("auth")
 def session_update(
     login_manager: LoginManager,
@@ -104,6 +119,7 @@ def session_update(
     no_local_server: bool,
     policies: list[str] | None,
     all: bool,
+    any: bool,
 ) -> None:
     """
     Update your current CLI auth session by authenticating
@@ -121,21 +137,24 @@ def session_update(
     mutually exclusive with IDs and usernames.
     When usernames or IDs are used, they must be in your identity set.
     """
-    modes = bool(identities) + bool(policies) + all
+    modes = bool(identities) + bool(policies) + all + any
     if modes > 1:
         raise click.UsageError(
-            "IDENTITY values, --all, and --policy are all mutually exclusive"
+            "IDENTITY values, --all, --any, and --policy are all mutually exclusive"
         )
     if modes < 1:
         raise click.UsageError(
-            "Either provide IDENTITY values or use the --all or --policy options"
+            "Either provide IDENTITY values or use the "
+            "--any, --all, or --policy options"
         )
 
     auth_client = login_manager.get_auth_client()
     session_params = {"session_message": "Authenticate to update your CLI session."}
     identity_set = auth_client.userinfo()["identity_set"]
 
-    if all:
+    if any:
+        _update_session_params_any_case(identity_set, session_params)
+    elif all:
         _update_session_params_all_case(identity_set, session_params)
     elif policies:
         session_params["session_required_policies"] = ",".join(policies)
