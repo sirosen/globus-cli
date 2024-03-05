@@ -9,7 +9,6 @@ import globus_sdk.experimental.auth_requirements_error
 
 from globus_cli.commands.collection._common import (
     LazyCurrentIdentity,
-    filter_fields,
     identity_id_option,
     standard_collection_fields,
 )
@@ -139,7 +138,7 @@ def collection_create_guest(
         raise
 
     fields = standard_collection_fields(login_manager.get_auth_client())
-    display(res, text_mode=TextMode.text_record, fields=filter_fields(fields, res))
+    display(res, text_mode=TextMode.text_record, fields=fields)
 
 
 def _select_user_credential_id(

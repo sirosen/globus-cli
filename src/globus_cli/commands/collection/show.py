@@ -4,26 +4,23 @@ import uuid
 
 import click
 
-from globus_cli.commands.collection._common import (
-    filter_fields,
-    standard_collection_fields,
-)
+from globus_cli.commands.collection._common import standard_collection_fields
 from globus_cli.login_manager import LoginManager
 from globus_cli.parsing import collection_id_arg, command
-from globus_cli.termio import Field, TextMode, display, formatters
+from globus_cli.termio import Field, FilteredField, TextMode, display, formatters
 
 PRIVATE_FIELDS: list[Field] = [
-    Field("Root Path", "root_path"),
-    Field("Default Directory", "default_directory"),
-    Field(
+    FilteredField("Root Path", "root_path"),
+    FilteredField("Default Directory", "default_directory"),
+    FilteredField(
         "Sharing Path Restrictions",
         "sharing_restrict_paths",
         formatter=formatters.SortedJson,
     ),
-    Field("Sharing Allowed Users", "sharing_users_allow"),
-    Field("Sharing Denied Users", "sharing_users_deny"),
-    Field("Sharing Allowed POSIX Groups", "policies.sharing_groups_allow"),
-    Field("Sharing Denied POSIX Groups", "policies.sharing_groups_deny"),
+    FilteredField("Sharing Allowed Users", "sharing_users_allow"),
+    FilteredField("Sharing Denied Users", "sharing_users_deny"),
+    FilteredField("Sharing Allowed POSIX Groups", "policies.sharing_groups_allow"),
+    FilteredField("Sharing Denied POSIX Groups", "policies.sharing_groups_deny"),
 ]
 
 
@@ -58,12 +55,4 @@ def collection_show(
 
     res = gcs_client.get_collection(collection_id, query_params=query_params)
 
-    # walk the list of all known fields and reduce the rendering to only look
-    # for fields which are actually present
-    real_fields = filter_fields(fields, res)
-
-    display(
-        res,
-        text_mode=TextMode.text_record,
-        fields=real_fields,
-    )
+    display(res, text_mode=TextMode.text_record, fields=fields)

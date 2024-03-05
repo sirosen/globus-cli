@@ -13,7 +13,7 @@ from .context import (
     verbosity,
 )
 from .errors import PrintableErrorField, write_error_info
-from .field import Field
+from .field import Field, FilteredField
 from .printer import TextMode, display
 
 
@@ -31,6 +31,7 @@ __all__ = [
     "PrintableErrorField",
     "write_error_info",
     "Field",
+    "FilteredField",
     "TextMode",
     "display",
     "out_is_terminal",

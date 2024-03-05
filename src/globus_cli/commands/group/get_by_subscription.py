@@ -15,7 +15,7 @@ from globus_cli.termio import (
     print_command_hint,
 )
 
-from ._common import GROUP_FIELDS_W_SUBSCRIPTION, SUBSCRIPTION_FIELDS
+from ._common import GROUP_FIELDS, SUBSCRIPTION_FIELDS
 
 
 @click.argument("subscription_id", type=click.UUID)
@@ -44,11 +44,7 @@ def group_get_by_subscription(
     # if text output was wanted *and* we successfully got the group data
     # then we will display Group data
     if group_data:
-        display(
-            group_data,
-            text_mode=TextMode.text_record,
-            fields=GROUP_FIELDS_W_SUBSCRIPTION,
-        )
+        display(group_data, text_mode=TextMode.text_record, fields=GROUP_FIELDS)
     # otherwise, display the subscription data and text-mode will be just the Group ID
     else:
         # if text mode was requested and we're in this branch, it means an attempt to

@@ -72,11 +72,7 @@ def show_logs_command(
         for entry in entry_list:
             entry["details"] = json.dumps(entry["details"])
 
-        display(
-            entry_list,
-            text_mode=TextMode.text_record_list,
-            fields=fields,
-        )
+        display(entry_list, text_mode=TextMode.text_record_list, fields=fields)
     else:
         print_command_hint(
             "Displaying summary data. "

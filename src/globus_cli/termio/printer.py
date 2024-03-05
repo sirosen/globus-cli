@@ -81,6 +81,8 @@ def print_unix_response(res):
 
 
 def _colon_display(data, fields):
+    fields = [f for f in fields if f.is_present(data)]
+
     maxlen = max(len(f.name) for f in fields) + 2
     indent = " " * maxlen
 
@@ -111,6 +113,12 @@ def _colon_display(data, fields):
 
 
 def print_table(iterable, fields, print_headers=True):
+    for field in fields:
+        if field.conditional is not None:
+            raise ValueError(
+                "Internal Error. Cannot use data-conditional fields in table output."
+            )
+
     # the iterable may not be safe to walk multiple times, so we must walk it
     # only once -- however, to let us write things naturally, convert it to a
     # list and we can assume it is safe to walk repeatedly
