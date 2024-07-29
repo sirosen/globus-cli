@@ -26,9 +26,9 @@ from globus_sdk.scopes.consents import ConsentForest
 from globus_cli.endpointish import Endpointish, EntityType
 from globus_cli.types import ServiceNameLiteral
 
-from .. import version
 from .auth_flows import do_link_auth_flow, do_local_server_auth_flow
 from .client_login import get_client_login, is_client_login
+from .clientinfo import add_cli_clientinfo
 from .context import LoginContext
 from .errors import MissingLoginError
 from .scopes import CLI_SCOPE_REQUIREMENTS
@@ -381,40 +381,39 @@ class LoginManager:
         from ..services.transfer import CustomTransferClient
 
         authorizer = self._get_client_authorizer(TransferScopes.resource_server)
-        client = CustomTransferClient(authorizer=authorizer, app_name=version.app_name)
+        client = CustomTransferClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_auth_client(self) -> CustomAuthClient:
         from ..services.auth import CustomAuthClient
 
         authorizer = self._get_client_authorizer(AuthScopes.resource_server)
-        client = CustomAuthClient(authorizer=authorizer, app_name=version.app_name)
+        client = CustomAuthClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_groups_client(self) -> globus_sdk.GroupsClient:
         authorizer = self._get_client_authorizer(GroupsScopes.resource_server)
-        client = globus_sdk.GroupsClient(
-            authorizer=authorizer, app_name=version.app_name
-        )
+        client = globus_sdk.GroupsClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_flows_client(self) -> globus_sdk.FlowsClient:
         authorizer = self._get_client_authorizer(FlowsScopes.resource_server)
-        client = globus_sdk.FlowsClient(
-            authorizer=authorizer, app_name=version.app_name
-        )
+        client = globus_sdk.FlowsClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_search_client(self) -> globus_sdk.SearchClient:
         authorizer = self._get_client_authorizer(SearchScopes.resource_server)
-        client = globus_sdk.SearchClient(
-            authorizer=authorizer, app_name=version.app_name
-        )
+        client = globus_sdk.SearchClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_timer_client(
@@ -428,10 +427,9 @@ class LoginManager:
             self._assert_requester_has_timer_flow_consent(flow_id)
 
         authorizer = self._get_client_authorizer(TimersScopes.resource_server)
-        client = globus_sdk.TimersClient(
-            authorizer=authorizer, app_name=version.app_name
-        )
+        client = globus_sdk.TimersClient(authorizer=authorizer)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def _assert_requester_has_timer_flow_consent(self, flow_id: uuid.UUID) -> None:
@@ -473,8 +471,9 @@ class LoginManager:
     ) -> globus_sdk.SpecificFlowClient:
         # Create a SpecificFlowClient without an authorizer
         # to take advantage of its scope creation code.
-        client = globus_sdk.SpecificFlowClient(flow_id, app_name=version.app_name)
+        client = globus_sdk.SpecificFlowClient(flow_id)
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         assert client.scopes is not None
         self.add_requirement(client.scopes.resource_server, [client.scopes.user])
 
@@ -564,9 +563,9 @@ class LoginManager:
             epish.get_gcs_address(),
             source_epish=epish,
             authorizer=authorizer,
-            app_name=version.app_name,
         )
         self._client_pool.add(client)
+        add_cli_clientinfo(client)
         return client
 
     def get_current_identity_id(self) -> str:
