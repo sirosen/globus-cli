@@ -16,11 +16,11 @@ if t.TYPE_CHECKING:
 
 
 AnyCallable: t.TypeAlias = t.Callable[..., t.Any]
-AnyCommand: t.TypeAlias = t.Union[click.Command, AnyCallable]
+AnyCommand: t.TypeAlias = click.Command | AnyCallable
 
 
-ClickContextTree: t.TypeAlias = t.Tuple[
-    click.Context, t.List[click.Context], t.List["ClickContextTree"]
+ClickContextTree: t.TypeAlias = tuple[
+    click.Context, list[click.Context], list["ClickContextTree"]
 ]
 
 
@@ -29,9 +29,9 @@ DATA_CONTAINER_T: t.TypeAlias = t.Union[
     "globus_sdk.GlobusHTTPResponse",
 ]
 
-JsonValue: t.TypeAlias = t.Union[
-    int, float, str, bool, None, t.List["JsonValue"], t.Dict[str, "JsonValue"]
-]
+JsonValue: t.TypeAlias = (
+    int | float | str | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
+)
 
 
 ServiceNameLiteral: t.TypeAlias = t.Literal[
